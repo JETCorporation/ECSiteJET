@@ -43,7 +43,7 @@
                         <!--{/if}-->
                     <!--{else}-->
                         <dl class="formlist">
-                            <dt>メールアドレス</dt>
+                            <dt>ログインID</dt>
                             <dd>
                                 <input type="text" name="login_email" class="box140" value="<!--{$tpl_login_email|h}-->" style="ime-mode: disabled;" />
                             </dd>

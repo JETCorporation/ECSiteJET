@@ -5,13 +5,13 @@
 
         if (!$login_email.val()) {
             $login_email
-                .val('メールアドレス')
+                .val('ログインID')
                 .css('color', '#AAA');
         }
 
         $login_email
             .focus(function() {
-                if ($(this).val() == 'メールアドレス') {
+                if ($(this).val() == 'ログインID') {
                     $(this)
                         .val('')
                         .css('color', '#000');
@@ -20,16 +20,16 @@
             .blur(function() {
                 if (!$(this).val()) {
                     $(this)
-                        .val('メールアドレス')
+                        .val('ログインID')
                         .css('color', '#AAA');
                 }
             });
 
         $('#header_login_form').submit(function() {
             if (!$login_email.val()
-                || $login_email.val() == 'メールアドレス') {
+                || $login_email.val() == 'ログインID') {
                 if ($('#header_login_area input[name=login_pass]').val()) {
-                    alert('メールアドレス/パスワードを入力して下さい。');
+                    alert('ログインID/パスワードを入力して下さい。');
                 }
                 return false;
             }
@@ -59,7 +59,7 @@
                     <!--{else}-->
                         <ul class="formlist clearfix">
                             <li class="mail">
-                                <input type="text" class="box150" name="login_email" value="<!--{$tpl_login_email|h}-->" style="ime-mode: disabled;" title="メールアドレスを入力して下さい" />
+                                <input type="text" class="box150" name="login_email" value="<!--{$tpl_login_email|h}-->" style="ime-mode: disabled;" title="ログインIDを入力して下さい" />
                             </li>
                             <li class="login_memory">
                                 <input type="checkbox" name="login_memory" id="header_login_memory" value="1" <!--{$tpl_login_memory|sfGetChecked:1}--> /><label for="header_login_memory"><span>記憶</span></label>
