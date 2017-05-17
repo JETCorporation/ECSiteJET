@@ -7,6 +7,7 @@ body {
     color: #666;
     font-family: Verdana,Arial,Helvetica,sans-serif;
     background:url("../img/background/ishinomaki-hune.jpg");
+    background-attachment:fixed;
     font-size: 72.5%;
     line-height: 150%;
     letter-spacing: 0.1em;
