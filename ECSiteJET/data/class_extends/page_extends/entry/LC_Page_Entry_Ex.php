@@ -21,157 +21,206 @@
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
  */
 
-require_once CLASS_REALDIR . 'helper/SC_Helper_Customer.php';
+require_once CLASS_REALDIR . 'pages/entry/LC_Page_Entry.php';
 
 /**
- * CSV関連のヘルパークラス(拡張).
+ * 会員登録(入力ページ) のページクラス(拡張).
  *
- * LC_Helper_Customer をカスタマイズする場合はこのクラスを編集する.
+ * LC_Page_Entry をカスタマイズする場合はこのクラスを編集する.
  *
- * @package Helper
+ * @package Page
  * @author LOCKON CO.,LTD.
- * @version $Id:SC_Helper_DB_Ex.php 15532 2007-08-31 14:39:46Z nanasess $
+ * @version $Id: LC_Page_Entry_Ex.php 22926 2013-06-29 16:24:23Z Seasoft $
  */
-class SC_Helper_Customer_Ex extends SC_Helper_Customer{
-	/**
-	 * 会員情報の登録・編集処理を行う.
-	 *
-	 * @param array $arrData     登録するデータの配列（SC_FormParamのgetDbArrayの戻り値）
-	 * @param array $customer_id nullの場合はinsert, 存在する場合はupdate
-	 * @access public
-	 * @return integer 登録編集したユーザーのcustomer_id
-	 */
-	public function sfEditCustomerData($arrData, $customer_id = null)
-	{
-		$objQuery =& SC_Query_Ex::getSingletonInstance();
-		$objQuery->begin();
+class LC_Page_Entry_Ex extends LC_Page_Entry
+{
+    /**
+     * Page を初期化する.
+     *
+     * @return void
+     */
+    function init()
+    {
+        parent::init();
+    }
 
-		$old_version_flag = false;
+    /**
+     * Page のプロセス.
+     *
+     * @return void
+     */
+    function process()
+    {
+        parent::process();
+    }
 
-		$arrData['update_date'] = 'CURRENT_TIMESTAMP';    // 更新日
-
-		// salt値の生成(insert時)または取得(update時)。
-		if (is_numeric($customer_id)) {
-			$salt = $objQuery->get('salt', 'dtb_customer', 'customer_id = ? ', array($customer_id));
-
-			// 旧バージョン(2.11未満)からの移行を考慮
-			if (strlen($salt) === 0) {
-				$old_version_flag = true;
-			}
-		} else {
-			$salt = SC_Utils_Ex::sfGetRandomString(10);
-			$arrData['salt'] = $salt;
-		}
-		//-- パスワードの更新がある場合は暗号化
-		if ($arrData['password'] == DEFAULT_PASSWORD or $arrData['password'] == '') {
-			//更新しない
-			unset($arrData['password']);
-		} else {
-			// 旧バージョン(2.11未満)からの移行を考慮
-			if ($old_version_flag) {
-				$is_password_updated = true;
-				$salt = SC_Utils_Ex::sfGetRandomString(10);
-				$arrData['salt'] = $salt;
-			}
-
-			$arrData['password'] = SC_Utils_Ex::sfGetHashString($arrData['password'], $salt);
-		}
-		//-- 秘密の質問の更新がある場合は暗号化
-		if ($arrData['reminder_answer'] == DEFAULT_PASSWORD or $arrData['reminder_answer'] == '') {
-			//更新しない
-			unset($arrData['reminder_answer']);
-
-			// 旧バージョン(2.11未満)からの移行を考慮
-			if ($old_version_flag && $is_password_updated) {
-				// パスワードが更新される場合は、平文になっている秘密の質問を暗号化する
-				$reminder_answer = $objQuery->get('reminder_answer', 'dtb_customer', 'customer_id = ? ', array($customer_id));
-				$arrData['reminder_answer'] = SC_Utils_Ex::sfGetHashString($reminder_answer, $salt);
-			}
-		} else {
-			// 旧バージョン(2.11未満)からの移行を考慮
-			if ($old_version_flag && !$is_password_updated) {
-				// パスワードが更新されない場合は、平文のままにする
-				unset($arrData['salt']);
-			} else {
-				$arrData['reminder_answer'] = SC_Utils_Ex::sfGetHashString($arrData['reminder_answer'], $salt);
-			}
-		}
-
-		//デフォルト国IDを追加
-		if (FORM_COUNTRY_ENABLE == false) {
-			$arrData['country_id'] = DEFAULT_COUNTRY_ID;
-		}
-
-		//-- 編集登録実行
-		if (is_numeric($customer_id)) {
-			// 編集
-			$objQuery->update('dtb_customer', $arrData, 'customer_id = ? ', array($customer_id));
-		} else {
-			// 新規登録
-
-			// 会員ID
-			$customer_id = $objQuery->nextVal('dtb_customer_customer_id');
-			$arrData['customer_id'] = $customer_id;
-
-			do{
-				$a = substr(str_shuffle('1234567890abcdefghijklmnopqrstuvwxyz'), 0, 10);
+    public function lfSendMail($uniqid, $arrForm,$login_id)
+    {
 
 
-				if($a == true){
-					$b = $objQuery->get("login_id","dtb_customer","login_id=?",array($a));
+    	$CONF           = SC_Helper_DB_Ex::sfGetBasisData();
 
-				}
-			}while(TRUE ==$b);
+    	$objMailText    = new SC_SiteView_Ex();
+    	$objMailText->setPage($this);
+    	$objMailText->assign('CONF', $CONF);
+    	$objMailText->assign('name01', $arrForm['name01']);
+    	$objMailText->assign('name02', $arrForm['name02']);
 
-			$arrData['login_id'] = $a;
+    	//追加
+    	$objMailText->assign( 'Log_id',$login_id);
 
+    	$objMailText->assign('uniqid', $uniqid);
 
-			// 作成日
-			if (is_null($arrData['create_date'])) {
-				$arrData['create_date'] = 'CURRENT_TIMESTAMP';
-			}
-			$objQuery->insert('dtb_customer', $arrData);
-		}
-
-		$objQuery->commit();
-
-		return array($customer_id, $arrData['login_id']);
-	}
+        $objMailText->assignobj($this);
 
 
-	//追加
-	public function sfCustomerRegisterParam(&$objFormParam, $isAdmin = false, $is_mypage = false, $prefix = '')
-	{
-		//ログインID
-		$objFormParam->addParam('ログインID', $prefix . 'login_id', PASSWORD_MAX_LEN, '', array('EXIST_CHECK', 'SPTAB_CHECK', 'ALNUM_CHECK'));
 
 
-		$objFormParam->addParam('パスワード', $prefix . 'password', PASSWORD_MAX_LEN, '', array('EXIST_CHECK', 'SPTAB_CHECK', 'ALNUM_CHECK'));
-		$objFormParam->addParam('パスワード確認用の質問の答え', $prefix . 'reminder_answer', STEXT_LEN, '', array('EXIST_CHECK', 'SPTAB_CHECK', 'MAX_LENGTH_CHECK'));
-		$objFormParam->addParam('パスワード確認用の質問', $prefix . 'reminder', STEXT_LEN, 'n', array('EXIST_CHECK', 'NUM_CHECK', 'MAX_LENGTH_CHECK'));
-		$objFormParam->addParam('性別', $prefix . 'sex', INT_LEN, 'n', array('EXIST_CHECK', 'NUM_CHECK', 'MAX_LENGTH_CHECK'));
-		$objFormParam->addParam('職業', $prefix . 'job', INT_LEN, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'));
-		$objFormParam->addParam('年', $prefix . 'year', 4, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'), '', false);
-		$objFormParam->addParam('月', $prefix . 'month', 2, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'), '', false);
-		$objFormParam->addParam('日', $prefix . 'day', 2, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'), '', false);
 
-		$objFormParam->addParam('メールマガジン', $prefix . 'mailmaga_flg', INT_LEN, 'n', array('EXIST_CHECK', 'NUM_CHECK', 'MAX_LENGTH_CHECK'));
 
-		if (SC_Display_Ex::detectDevice() !== DEVICE_TYPE_MOBILE) {
-			$objFormParam->addParam('メールアドレス', $prefix . 'email', null, 'a', array('NO_SPTAB', 'EXIST_CHECK', 'EMAIL_CHECK', 'SPTAB_CHECK' ,'EMAIL_CHAR_CHECK'));
-			$objFormParam->addParam('パスワード(確認)', $prefix . 'password02', PASSWORD_MAX_LEN, '', array('EXIST_CHECK', 'SPTAB_CHECK' ,'ALNUM_CHECK'), '', false);
-			if (!$isAdmin) {
-				$objFormParam->addParam('メールアドレス(確認)', $prefix . 'email02', null, 'a', array('NO_SPTAB', 'EXIST_CHECK', 'EMAIL_CHECK','SPTAB_CHECK' , 'EMAIL_CHAR_CHECK'), '', false);
-			}
-		} else {
-			if (!$is_mypage) {
-				$objFormParam->addParam('メールアドレス', $prefix . 'email', null, 'a', array('EXIST_CHECK', 'EMAIL_CHECK', 'NO_SPTAB' ,'EMAIL_CHAR_CHECK', 'MOBILE_EMAIL_CHECK'));
-			}
-		}
-	}
+
+
+
+
+
+    	$objHelperMail  = new SC_Helper_Mail_Ex();
+    	$objHelperMail->setPage($this);
+
+    	// 仮会員が有効の場合
+    	if (CUSTOMER_CONFIRM_MAIL == true) {
+    		$subject        = $objHelperMail->sfMakeSubject('会員登録のご確認');
+    		$toCustomerMail = $objMailText->fetch('mail_templates/customer_mail.tpl');
+    	} else {
+    		$subject        = $objHelperMail->sfMakeSubject('会員登録のご完了');
+    		$toCustomerMail = $objMailText->fetch('mail_templates/customer_regist_mail.tpl');
+
+
+
+    	}
+
+    	$objMail = new SC_SendMail_Ex();
+    	$objMail->setItem(
+    			''                    // 宛先
+    			, $subject              // サブジェクト
+    			, $toCustomerMail       // 本文
+    			, $CONF['email03']      // 配送元アドレス
+    			, $CONF['shop_name']    // 配送元 名前
+    			, $CONF['email03']      // reply_to
+    			, $CONF['email04']      // return_path
+    			, $CONF['email04']      // Errors_to
+    			, $CONF['email01']      // Bcc
+    	);
+    	// 宛先の設定
+    	$objMail->setTo($arrForm['email'],
+    			$arrForm['name01'] . $arrForm['name02'] .' 様');
+
+    	$objMail->sendMail();
+    }
+
+    public function action()
+    {
+    	//決済処理中ステータスのロールバック
+    	$objPurchase = new SC_Helper_Purchase_Ex();
+    	$objPurchase->cancelPendingOrder(PENDING_ORDER_CANCEL_FLAG);
+
+    	$objFormParam = new SC_FormParam_Ex();
+
+    	// PC時は規約ページからの遷移でなければエラー画面へ遷移する
+    	if ($this->lfCheckReferer() === false) {
+    		SC_Utils_Ex::sfDispSiteError(PAGE_ERROR, '', true);
+    	}
+
+    	SC_Helper_Customer_Ex::sfCustomerEntryParam($objFormParam);
+    	$objFormParam->setParam($_POST);
+
+    	// mobile用（戻るボタンでの遷移かどうかを判定）
+    	if (!empty($_POST['return'])) {
+    		$_REQUEST['mode'] = 'return';
+    	}
+
+    	switch ($this->getMode()) {
+    		case 'confirm':
+    			if (isset($_POST['submit_address'])) {
+    				// 入力エラーチェック
+    				$this->arrErr = $this->lfCheckError($_POST);
+    				// 入力エラーの場合は終了
+    				if (count($this->arrErr) == 0) {
+    					// 郵便番号検索文作成
+    					$zipcode = $_POST['zip01'] . $_POST['zip02'];
+
+    					// 郵便番号検索
+    					$arrAdsList = SC_Utils_Ex::sfGetAddress($zipcode);
+
+    					// 郵便番号が発見された場合
+    					if (!empty($arrAdsList)) {
+    						$data['pref'] = $arrAdsList[0]['state'];
+    						$data['addr01'] = $arrAdsList[0]['city']. $arrAdsList[0]['town'];
+    						$objFormParam->setParam($data);
+
+    						// 該当無し
+    					} else {
+    						$this->arrErr['zip01'] = '※該当する住所が見つかりませんでした。<br>';
+    					}
+    				}
+    				break;
+    			}
+
+    			//-- 確認
+    			$this->arrErr = SC_Helper_Customer_Ex::sfCustomerEntryErrorCheck($objFormParam);
+    			// 入力エラーなし
+    			if (empty($this->arrErr)) {
+    				//パスワード表示
+    				$this->passlen      = SC_Utils_Ex::sfPassLen(strlen($objFormParam->getValue('password')));
+
+    				$this->tpl_mainpage = 'entry/confirm.tpl';
+    				$this->tpl_title    = '会員登録(確認ページ)';
+    			}
+    			break;
+    		case 'complete':
+    			//-- 会員登録と完了画面
+    			$this->arrErr = SC_Helper_Customer_Ex::sfCustomerEntryErrorCheck($objFormParam);
+    			if (empty($this->arrErr)) {
+    				list($uniqid,$login_id)             = $this->lfRegistCustomerData($this->lfMakeSqlVal($objFormParam));
+
+    				//追加
+    				$this->lfSendMail($uniqid, $objFormParam->getHashArray(),$login_id);
+
+    				// 仮会員が無効の場合
+    				if (CUSTOMER_CONFIRM_MAIL == false) {
+    					// ログイン状態にする
+    					$objCustomer = new SC_Customer_Ex();
+    					$objCustomer->setLogin($objFormParam->getValue('email'));
+    				}
+
+    				// 完了ページに移動させる。
+    				SC_Response_Ex::sendRedirect('complete.php', array('ci' => SC_Helper_Customer_Ex::sfGetCustomerId($uniqid)));
+    			}
+    			break;
+    		case 'return':
+    			// quiet.
+    			break;
+    		default:
+    			break;
+    	}
+    	$this->arrForm = $objFormParam->getFormParamList();
+    }
+
+    /**
+     * 会員情報の登録
+     *
+     * @access private
+     * @return uniqid
+     */
+    public function lfRegistCustomerData($sqlval)
+    {
+    	//追加
+  	 list($customer_id,$login_id) =  SC_Helper_Customer_Ex::sfEditCustomerData($sqlval);
+
+   return array($sqlval['secret_key'], $login_id);
+
+
+
+    }
 
 
 }
-
-
-
