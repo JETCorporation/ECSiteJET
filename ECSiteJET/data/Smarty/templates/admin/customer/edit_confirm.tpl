@@ -59,6 +59,14 @@ function func_return(){
 
     <div id="customer" class="contents-main">
         <table class="form">
+
+            //追加
+             <tr>
+                <th>会員ID</th>
+                <td><!--{$arrForm.login_id|h}--></td>
+            </tr>
+
+
             <tr>
                 <th>会員ID</th>
                 <td><!--{$arrForm.customer_id|h}--></td>

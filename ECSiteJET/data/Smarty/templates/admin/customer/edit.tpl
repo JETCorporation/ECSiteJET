@@ -69,6 +69,18 @@
 
     <div id="customer" class="contents-main">
         <table class="form">
+
+            //追加
+            <tr>
+                <th>ログID<span class="attention"> *</span></th>
+                <td>
+                    <span class="attention"><!--{$arrErr.login_id}--></span>
+                    <input type="text" name="login_id" value="<!--{$arrForm.login_id|h}-->" size="60" class="box60" <!--{if $arrErr.login_id != ""}--><!--{sfSetErrorStyle}--><!--{/if}--> />
+                </td>
+            </tr>
+
+
+
             <!--{if $arrForm.customer_id}-->
             <tr>
                 <th>会員ID<span class="attention"> *</span></th>
