@@ -70,7 +70,7 @@
     <div id="customer" class="contents-main">
         <table class="form">
 
-            //追加
+
             <tr>
                 <th>ログID<span class="attention"> *</span></th>
                 <td>
