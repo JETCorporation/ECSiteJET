@@ -25,4 +25,37 @@ require_once CLASS_REALDIR . 'SC_Customer.php';
 
 class SC_Customer_Ex extends SC_Customer
 {
+	//ついか
+	public $customer_data;
+
+	public function getCustomerDataFromEmailPass($pass, $email, $mobile = false)
+	{
+		// 小文字に変換
+		$email = strtolower($email);
+		$sql_mobile = $mobile ? ' OR email_mobile = ?' : '';
+		$arrValues = array($email);
+		if ($mobile) {
+			$arrValues[] = $email;
+		}
+		// 本登録された会員のみ
+		$sql = 'SELECT * FROM dtb_customer WHERE (login_id = ?' . $sql_mobile . ') AND del_flg = 0 AND status = 2';
+		$objQuery =& SC_Query_Ex::getSingletonInstance();
+		$result = $objQuery->getAll($sql, $arrValues);
+		if (empty($result)) {
+			return false;
+		} else {
+			$data = $result[0];
+		}
+
+		// パスワードが合っていれば会員情報をcustomer_dataにセットしてtrueを返す
+		if (SC_Utils_Ex::sfIsMatchHashPassword($pass, $data['password'], $data['salt'])) {
+			$this->customer_data = $data;
+			$this->startSession();
+
+			return true;
+		}
+
+		return false;
+	}
+
 }
