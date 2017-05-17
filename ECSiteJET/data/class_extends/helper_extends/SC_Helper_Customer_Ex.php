@@ -176,5 +176,5 @@ class SC_Helper_Customer_Ex extends SC_Helper_Customer
 
 
 
-}
+
 
