@@ -4,7 +4,8 @@
  共通設定
 ************************************************ */
 body {
-
+  color: #666;
+    font-family: Verdana,Arial,Helvetica,sans-serif;
     background:url("../img/background/ishinomaki-hune.jpg");
     font-size: 72.5%;
     line-height: 150%;
