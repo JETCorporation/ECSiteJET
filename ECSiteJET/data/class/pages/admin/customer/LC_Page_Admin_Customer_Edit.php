@@ -204,6 +204,8 @@ class LC_Page_Admin_Customer_Edit extends LC_Page_Admin_Ex
         $objFormParam->addParam('検索用データ', 'search_data', '', '', array(), '', false);
         // 会員購入履歴ページング用
         $objFormParam->addParam('', 'search_pageno', INT_LEN, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'), '', false);
+
+
     }
 
     /**

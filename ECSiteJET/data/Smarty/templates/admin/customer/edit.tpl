@@ -71,6 +71,10 @@
         <table class="form">
 
 
+
+            <!--{if $arrForm.customer_id}-->
+
+
             <tr>
                 <th>ログID<span class="attention"> *</span></th>
                 <td>
@@ -80,8 +84,6 @@
             </tr>
 
 
-
-            <!--{if $arrForm.customer_id}-->
             <tr>
                 <th>会員ID<span class="attention"> *</span></th>
                 <td><!--{$arrForm.customer_id|h}--></td>

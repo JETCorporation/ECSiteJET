@@ -53,4 +53,29 @@ class LC_Page_Admin_Customer_Edit_Ex extends LC_Page_Admin_Customer_Edit
     {
         parent::process();
     }
+    //追加
+
+    /**
+     * パラメーター情報の初期化
+     *
+     * @param  array $objFormParam フォームパラメータークラス
+     * @return void
+     */
+    public function lfInitParam(&$objFormParam)
+    {
+    	// 会員項目のパラメーター取得
+    	SC_Helper_Customer_Ex::sfCustomerEntryParam($objFormParam, true);
+    	// 検索結果一覧画面への戻り用パラメーター
+    	$objFormParam->addParam('検索用データ', 'search_data', '', '', array(), '', false);
+    	// 会員購入履歴ページング用
+    	$objFormParam->addParam('', 'search_pageno', INT_LEN, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'), '', false);
+
+    	//追加
+    	$objFormParam->addParam('', 'login_id',15, 'a', array('ALNUM_CHECK'));//aは英数字を半角に変換
+
+    }
+
+
+
+
 }
