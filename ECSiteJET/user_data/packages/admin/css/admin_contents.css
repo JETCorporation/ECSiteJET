@@ -1,4 +1,33 @@
 @charset "utf-8";
+x-dummy,
+.authority_2 #navi-basis,
+.authority_2 #navi-contents-index,
+.authority_2 #navi-total,
+.authority_2 #navi-contents-recommend,
+.authority_2 #navi-contents-csv,
+.authority_2 #navi-products,
+.authority_2 #navi-mail,
+.authority_2 #navi-design,
+.authority_2 #navi-system,
+.authority_2 #navi-ownersstore,
+.authority_2 #navi-design /* 追加：デザイン管理を非表示にする */
+{
+    /* display: none; --- IE で不具合 */
+    border: none;
+    width: 0;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+}
+
+
+
+
+
+
+
+
+
 
 html {
     height: 100%;
