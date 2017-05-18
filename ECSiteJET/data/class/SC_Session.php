@@ -69,9 +69,9 @@ class SC_Session
     {
        if ($this->cert == CERT_STRING) {
             $masterData = new SC_DB_MasterData_Ex();
-            $admin_path = strtolower(preg_replace('/\/+/', '/', $_SERVER['SCRIPT_NAME']));
+            $admin_path = strtolower(preg_replace('/\/+/', '/', $_SERVER['SCRIPT_NAME']));            
             $arrPERMISSION = array_change_key_case($masterData->getMasterData('mtb_permission'));
-            if (isset($arrPERMISSION[$admin_path])) {
+            if (isset($arrPERMISSION[$admin_path])) { 
                 // 数値が自分の権限以上のものでないとアクセスできない。
                 if ($arrPERMISSION[$admin_path] < $this->authority) {
                     return AUTH_ERROR;
