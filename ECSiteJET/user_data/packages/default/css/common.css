@@ -6,8 +6,11 @@
 body {
   color: #666;
     font-family: Verdana,Arial,Helvetica,sans-serif;
-    background:url("../img/background/ishinomaki-hune.jpg");
-    border: 0.09px ;
+    background:url("../img/background/ishinomakishi-hune.jpg" );
+   background: heigth="390";
+    border: 0.05px ;
+
+    background-attachment:fixed;
     font-size: 75.5%;
     line-height: 150%;
     letter-spacing: 0.1em;
@@ -34,7 +37,7 @@ img.picture {
     margin: 0 auto;
     padding: 0 0 30px;
     width: 980px;
-    background: #fff;
+    background: rgba(255, 255, 255, 0.4);
     text-align: left;
 }
 
