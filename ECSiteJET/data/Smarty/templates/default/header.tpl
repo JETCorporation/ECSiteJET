@@ -26,7 +26,7 @@
         <div id="header" class="clearfix">
             <div id="logo_area">
                 <p id="site_description"></p>
-
+                <a href="<!--{$smarty.const.TOP_URL}-->">新しい時代を新しい景色とともに<!--{$tpl_title|h}--> </a>
             </div>
             <div id="header_utility">
                 <div id="headerInternalColumn">
@@ -47,7 +47,17 @@
                 <!--{* ▲HeaderInternal COLUMN *}-->
                 </div>
                 <div id="header_navi">
-
+                    <ul>
+                        <li class="mypage">
+                            <a href="<!--{$smarty.const.HTTPS_URL}-->mypage/login.php"><img class="hover_change_image" src="<!--{$TPL_URLPATH}-->img/common/btn_header_mypage.jpg" alt="MYページ" /></a>
+                        </li>
+                        <li class="entry">
+                            <a href="<!--{$smarty.const.ROOT_URLPATH}-->entry/kiyaku.php"><img class="hover_change_image" src="<!--{$TPL_URLPATH}-->img/common/btn_header_entry.jpg" alt="会員登録" /></a>
+                        </li>
+                        <li>
+                            <a href="<!--{$smarty.const.CART_URL}-->"><img class="hover_change_image" src="<!--{$TPL_URLPATH}-->img/common/btn_header_cart.jpg" alt="カゴの中を見る" /></a>
+                        </li>
+                    </ul>
                 </div>
             </div>
         </div>
