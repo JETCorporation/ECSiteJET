@@ -176,6 +176,24 @@
                     <!--{/section}-->
                 </dl>
 
+
+                <!--★アレルギー★-->
+                <dl class="relative_cat">
+                    <dt>アレルギー表示：</dt>
+                    <!--{section name=r loop=$arrALLER}-->
+                        <dd>
+                            <!--{section name=s loop=$arrALLER}-->
+                                <a href="<!--{$smarty.const.ROOT_URLPATH}-->products/list.php?category_id=<!--{$arrRelativeCat[r][s].category_id}-->"><!--{$arrRelativeCat[r][s].category_name|h}--></a>
+                                <!--{if !$smarty.section.s.last}--><!--{$smarty.const.SEPA_CATNAVI}--><!--{/if}-->
+                            <!--{/section}-->
+                        </dd>
+                    <!--{/section}-->
+                </dl>
+
+
+
+
+
                 <!--★詳細メインコメント★-->
                 <div class="main_comment"><!--{$arrProduct.main_comment|nl2br_html}--></div>
 

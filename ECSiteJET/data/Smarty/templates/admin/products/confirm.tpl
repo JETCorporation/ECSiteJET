@@ -82,6 +82,20 @@
             </td>
         </tr>
 
+ <tr>
+            <th>アレルギー表示</th>
+            <td>
+                <!--{foreach from=$arrForm.allergy_id item=status}-->
+                    <!--{if $status != ""}-->
+                        <img src="<!--{$TPL_URLPATH_PC}--><!--{$arrALLER_IMAGE[$status]}-->">
+                    <!--{/if}-->
+                <!--{/foreach}-->
+            </td>
+        </tr>
+
+
+
+
         <!--{if $arrForm.has_product_class != true}-->
             <tr>
                 <th>商品種別</th>

@@ -166,6 +166,33 @@
                     <!--{/if}-->
                     <!--▲商品ステータス-->
 
+
+
+                    <div class="listrightbloc">
+                    <!--▼商品ステータス-->
+                    <!--{if count($productStatus[$id]) > 0}-->
+                        <ul class="status_icon clearfix">
+                            <!--{foreach from=$productStatus[$id] item=status}-->
+                                <li>
+                                    <img src="<!--{$TPL_URLPATH}--><!--{$arrSTATUS_IMAGE[$status]}-->" width="60" height="17" alt="<!--{$arrSTATUS[$status]}-->"/>
+                                </li>
+                            <!--{/foreach}-->
+                        </ul>
+                    <!--{/if}-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                     <!--★商品名★-->
                     <h3>
                         <a href="<!--{$smarty.const.P_DETAIL_URLPATH}--><!--{$arrProduct.product_id|u}-->"><!--{$arrProduct.name|h}--></a>
@@ -183,6 +210,10 @@
                             </span><span id="price02_dynamic_<!--{$id}-->"></span><!--{/strip}-->
                             円</span>
                     </div>
+
+
+
+
 
                     <!--★コメント★-->
                     <div class="listcomment"><!--{$arrProduct.main_list_comment|h|nl2br}--></div>
