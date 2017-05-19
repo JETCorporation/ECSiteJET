@@ -354,6 +354,10 @@ class LC_Page_Admin_Products extends LC_Page_Admin_Ex
                     $arrValues = array_merge($arrValues, $arrPartVal);
                 }
                 break;
+
+
+
+
             default:
                 break;
         }
@@ -389,7 +393,7 @@ class LC_Page_Admin_Products extends LC_Page_Admin_Ex
         $objQuery =& SC_Query_Ex::getSingletonInstance();
 
         // 読み込む列とテーブルの指定
-        $col = 'product_id, name, main_list_image, status, product_code_min, product_code_max, price02_min, price02_max, stock_min, stock_max, stock_unlimited_min, stock_unlimited_max, update_date';
+        $col = '  product_id, name, main_list_image, status, product_code_min, product_code_max, price02_min, price02_max, stock_min, stock_max, stock_unlimited_min, stock_unlimited_max, update_date';
         $from = $objProduct->alldtlSQL();
 
         $objQuery->setLimitOffset($limit, $offset);

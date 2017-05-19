@@ -42,6 +42,34 @@ class LC_Page_Admin_Products_Ex extends LC_Page_Admin_Products
     function init()
     {
         parent::init();
+        parent::init();
+        $this->tpl_mainpage = 'products/index.tpl';
+        $this->tpl_mainno = 'products';
+        $this->tpl_subno = 'index';
+        $this->tpl_pager = 'pager.tpl';
+        $this->tpl_maintitle = '商品管理';
+        $this->tpl_subtitle = '商品マスター';
+
+        $masterData = new SC_DB_MasterData_Ex();
+        $this->arrPageMax = $masterData->getMasterData('mtb_page_max');
+        $this->arrDISP = $masterData->getMasterData('mtb_disp');
+        $this->arrSTATUS = $masterData->getMasterData('mtb_status');
+        $this->arrALLER = $masterData->getMasterData('mtb_allergy');
+        $this->arrPRODUCTSTATUS_COLOR = $masterData->getMasterData('mtb_product_status_color');
+
+        $objDate = new SC_Date_Ex();
+        // 登録・更新検索開始年
+        $objDate->setStartYear(RELEASE_YEAR);
+        $objDate->setEndYear(DATE('Y'));
+        $this->arrStartYear = $objDate->getYear();
+        $this->arrStartMonth = $objDate->getMonth();
+        $this->arrStartDay = $objDate->getDay();
+        // 登録・更新検索終了年
+        $objDate->setStartYear(RELEASE_YEAR);
+        $objDate->setEndYear(DATE('Y'));
+        $this->arrEndYear = $objDate->getYear();
+        $this->arrEndMonth = $objDate->getMonth();
+        $this->arrEndDay = $objDate->getDay();
     }
 
     /**
