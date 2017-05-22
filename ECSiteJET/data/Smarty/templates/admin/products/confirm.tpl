@@ -82,17 +82,18 @@
             </td>
         </tr>
 
+
  <tr>
             <th>アレルギー表示</th>
             <td>
-                <!--{foreach from=$arrForm.allergy_id item=status}-->
-                    <!--{if $status != ""}-->
-                        <img src="<!--{$TPL_URLPATH_PC}--><!--{$arrALLER_IMAGE[$status]}-->">
+                <!--{foreach from=$arrForm.ALLER item=allergy}-->
+                    <!--{if $allergy != ""}-->
+                       <!--{assign var=key value="search_allergy"}-->
+                <span class="attention"><!--{$arrErr[$key]|h}--></span>
                     <!--{/if}-->
                 <!--{/foreach}-->
             </td>
         </tr>
-
 
 
 

@@ -151,16 +151,17 @@ function lfnDispChange(){
                 </td>
             </tr
 
-            <tr>
-                <th>アレルギー表示</th>
-                <td colspan="3">
-                <!--{assign var=key value="search_allergy"}-->
-                <span class="attention"><!--{$arrErr[$key]|h}--></span>
-                <!--{html_checkboxes name="$key" options=$arrALLER selected=$arrForm[$key].value}-->
-                </td>
-            </tr
 
-            >
+<tr>
+    <th>アレルギー表示</th>
+    <td colspan="3">
+        <!--{assign var=key value="search_allergy"}-->
+        <span class="attention"><!--{$arrErr[$key]|h}--></span>
+       <!--{html_checkboxes name="$key" options=$arrMaker selected=$arrForm[$key].value}-->
+    </td>
+</tr>
+
+
         </table>
         <div class="btn">
             <p class="page_rows">検索結果表示件数

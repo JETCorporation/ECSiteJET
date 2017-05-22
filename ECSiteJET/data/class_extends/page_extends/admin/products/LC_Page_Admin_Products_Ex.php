@@ -54,7 +54,7 @@ class LC_Page_Admin_Products_Ex extends LC_Page_Admin_Products
         $this->arrPageMax = $masterData->getMasterData('mtb_page_max');
         $this->arrDISP = $masterData->getMasterData('mtb_disp');
         $this->arrSTATUS = $masterData->getMasterData('mtb_status');
-        $this->arrALLER = $masterData->getMasterData('mtb_allergy');
+        $this->arrMaker = $masterData->getMasterData('mtb_allergy','id','name');
         $this->arrPRODUCTSTATUS_COLOR = $masterData->getMasterData('mtb_product_status_color');
 
         $objDate = new SC_Date_Ex();
@@ -81,4 +81,135 @@ class LC_Page_Admin_Products_Ex extends LC_Page_Admin_Products
     {
         parent::process();
     }
+    public function lfInitParam(&$objFormParam)
+    {
+    	// POSTされる値
+    	$objFormParam->addParam('商品ID', 'product_id', INT_LEN, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'));
+    	$objFormParam->addParam('カテゴリID', 'category_id', STEXT_LEN, 'n', array('SPTAB_CHECK', 'MAX_LENGTH_CHECK'));
+    	$objFormParam->addParam('ページ送り番号','search_pageno', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
+    	$objFormParam->addParam('表示件数', 'search_page_max', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
+
+    	// 検索条件
+    	$objFormParam->addParam('商品ID', 'search_product_id', INT_LEN, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'));
+    	$objFormParam->addParam('商品コード', 'search_product_code', STEXT_LEN, 'KVna', array('SPTAB_CHECK', 'MAX_LENGTH_CHECK'));
+    	$objFormParam->addParam('商品名', 'search_name', STEXT_LEN, 'KVa', array('SPTAB_CHECK', 'MAX_LENGTH_CHECK'));
+    	$objFormParam->addParam('カテゴリ', 'search_category_id', STEXT_LEN, 'n', array('SPTAB_CHECK', 'MAX_LENGTH_CHECK'));
+    	$objFormParam->addParam('種別', 'search_status', INT_LEN, 'n', array('MAX_LENGTH_CHECK'));
+    	$objFormParam->addParam('アレルギー表示', 'search_allergy', INT_LEN, 'n', array( 'MAX_LENGTH_CHECK'));
+
+    	// 登録・更新日
+    	$objFormParam->addParam('開始年', 'search_startyear', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
+    	$objFormParam->addParam('開始月', 'search_startmonth', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
+    	$objFormParam->addParam('開始日', 'search_startday', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
+    	$objFormParam->addParam('終了年', 'search_endyear', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
+    	$objFormParam->addParam('終了月', 'search_endmonth', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
+    	$objFormParam->addParam('終了日', 'search_endday', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
+
+    	$objFormParam->addParam('商品ステータス', 'search_product_statuses', INT_LEN, 'n', array('MAX_LENGTH_CHECK'));
+    }
+    /**
+     * クエリを構築する.
+     *
+     * 検索条件のキーに応じた WHERE 句と, クエリパラメーターを構築する.
+     * クエリパラメーターは, SC_FormParam の入力値から取得する.
+     *
+     * 構築内容は, 引数の $where 及び $arrValues にそれぞれ追加される.
+     *
+     * @param  string       $key          検索条件のキー
+     * @param  string       $where        構築する WHERE 句
+     * @param  array        $arrValues    構築するクエリパラメーター
+     * @param  SC_FormParam $objFormParam SC_FormParam インスタンス
+     * @param  SC_FormParam $objDb        SC_Helper_DB_Ex インスタンス
+     * @return void
+     */
+    public function buildQuery($key, &$where, &$arrValues, &$objFormParam, &$objDb)
+    {
+    	$dbFactory = SC_DB_DBFactory_Ex::getInstance();
+    	switch ($key) {
+    		// 商品ID
+    		case 'search_product_id':
+    			$where .= ' AND product_id = ?';
+    			$arrValues[] = sprintf('%d', $objFormParam->getValue($key));
+    			break;
+    			// 商品コード
+    		case 'search_product_code':
+    			$where .= ' AND product_id IN (SELECT product_id FROM dtb_products_class WHERE product_code ILIKE ? AND del_flg = 0)';
+    			$arrValues[] = sprintf('%%%s%%', $objFormParam->getValue($key));
+    			break;
+    			// 商品名
+    		case 'search_name':
+    			$where .= ' AND name LIKE ?';
+    			$arrValues[] = sprintf('%%%s%%', $objFormParam->getValue($key));
+    			break;
+    			// カテゴリ
+    		case 'search_category_id':
+    			list($tmp_where, $tmp_Values) = $objDb->sfGetCatWhere($objFormParam->getValue($key));
+    			if ($tmp_where != '') {
+    				$where.= ' AND product_id IN (SELECT product_id FROM dtb_product_categories WHERE ' . $tmp_where . ')';
+    				$arrValues = array_merge((array) $arrValues, (array) $tmp_Values);
+    			}
+    			break;
+    			// 種別
+    		case 'search_status':
+    			$tmp_where = '';
+    			foreach ($objFormParam->getValue($key) as $element) {
+    				if ($element != '') {
+    					if (SC_Utils_Ex::isBlank($tmp_where)) {
+    						$tmp_where .= ' AND (status = ?';
+    					} else {
+    						$tmp_where .= ' OR status = ?';
+    					}
+    					$arrValues[] = $element;
+    				}
+    			}
+
+    			if (!SC_Utils_Ex::isBlank($tmp_where)) {
+    				$tmp_where .= ')';
+    				$where .= " $tmp_where ";
+    			}
+    			break;
+    			// 登録・更新日(開始)
+    		case 'search_startyear':
+    			$date = SC_Utils_Ex::sfGetTimestamp($objFormParam->getValue('search_startyear'),
+    			$objFormParam->getValue('search_startmonth'),
+    			$objFormParam->getValue('search_startday'));
+    			$where.= ' AND update_date >= ?';
+    			$arrValues[] = $date;
+    			break;
+    			// 登録・更新日(終了)
+    		case 'search_endyear':
+    			$date = SC_Utils_Ex::sfGetTimestamp($objFormParam->getValue('search_endyear'),
+    			$objFormParam->getValue('search_endmonth'),
+    			$objFormParam->getValue('search_endday'), true);
+    			$where.= ' AND update_date <= ?';
+    			$arrValues[] = $date;
+    			break;
+    			// 商品ステータス
+    		case 'search_product_statuses':
+    			$arrPartVal = $objFormParam->getValue($key);
+    			$count = count($arrPartVal);
+    			if ($count >= 1) {
+    				$where .= ' '
+    						. 'AND product_id IN ('
+    								. '    SELECT product_id FROM dtb_product_status WHERE product_status_id IN (' . SC_Utils_Ex::repeatStrWithSeparator('?', $count) . ')'
+    										. ')';
+    				$arrValues = array_merge($arrValues, $arrPartVal);
+    			}
+    			break;
+
+
+    			case 'search_allergy':
+    				$where.= ' AND allergy = ?';
+    				$arrValues = $objFormParam->getValue($key);
+    				break;
+
+
+
+    		default:
+    			break;
+    	}
+    }
+
+
+
 }
