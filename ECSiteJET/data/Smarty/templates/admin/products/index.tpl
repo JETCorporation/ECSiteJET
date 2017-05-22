@@ -157,7 +157,7 @@ function lfnDispChange(){
     <td colspan="3">
         <!--{assign var=key value="search_allergy"}-->
         <span class="attention"><!--{$arrErr[$key]|h}--></span>
-       <!--{html_checkboxes name="$key" options=$arrMaker selected=$arrForm[$key].value}-->
+       <!--{html_checkboxes name="$key" options=$arrALLE selected=$arrForm[$key].value}-->
     </td>
 </tr>
 

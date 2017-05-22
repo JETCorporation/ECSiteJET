@@ -1042,6 +1042,7 @@ __EOF__;
             // INSERTの実行
             $sqlval['create_date'] = 'CURRENT_TIMESTAMP';
             $objQuery->insert('dtb_products', $sqlval);
+            
 
             $arrList['product_id'] = $product_id;
 
