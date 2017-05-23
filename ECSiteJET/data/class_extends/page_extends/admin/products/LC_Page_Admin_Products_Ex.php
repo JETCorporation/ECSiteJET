@@ -54,7 +54,7 @@ class LC_Page_Admin_Products_Ex extends LC_Page_Admin_Products
         $this->arrPageMax = $masterData->getMasterData('mtb_page_max');
         $this->arrDISP = $masterData->getMasterData('mtb_disp');
         $this->arrSTATUS = $masterData->getMasterData('mtb_status');
-        $this->arrMaker = $masterData->getMasterData('mtb_allergy','id','name');
+        $this->arrALLE = $masterData->getMasterData('mtb_allergy');
         $this->arrPRODUCTSTATUS_COLOR = $masterData->getMasterData('mtb_product_status_color');
 
         $objDate = new SC_Date_Ex();
@@ -95,7 +95,7 @@ class LC_Page_Admin_Products_Ex extends LC_Page_Admin_Products
     	$objFormParam->addParam('商品名', 'search_name', STEXT_LEN, 'KVa', array('SPTAB_CHECK', 'MAX_LENGTH_CHECK'));
     	$objFormParam->addParam('カテゴリ', 'search_category_id', STEXT_LEN, 'n', array('SPTAB_CHECK', 'MAX_LENGTH_CHECK'));
     	$objFormParam->addParam('種別', 'search_status', INT_LEN, 'n', array('MAX_LENGTH_CHECK'));
-    	$objFormParam->addParam('アレルギー表示', 'search_allergy', INT_LEN, 'n', array( 'MAX_LENGTH_CHECK'));
+    	$objFormParam->addParam('アレルギー表示', 'allergy', INT_LEN, 'n', array( 'MAX_LENGTH_CHECK'));
 
     	// 登録・更新日
     	$objFormParam->addParam('開始年', 'search_startyear', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
@@ -197,15 +197,16 @@ class LC_Page_Admin_Products_Ex extends LC_Page_Admin_Products
     			}
     			break;
 
+    			//アレルギー
+    			case 'allergy':
+    				$arrPartVal = $objFormParam->getValue($key);
+    			    $count = count($arrPartVal);
+    				if ($count>=1) {
+    					$where.= ' AND product_id IN (SELECT product_id FROM dtb_allergy WHERE allergy_id IN ('  . SC_Utils_Ex::repeatStrWithSeparator('?', $count) .  '))';
 
-    			case 'search_allergy':
-    			list($tmp_where, $tmp_Values) = $objDb->sfGetCatWhere($objFormParam->getValue($key));
-    			if ($tmp_where != '') {
-    				$where.= ' AND product_id IN (SELECT product_id FROM dtb_allergy WHERE ' . $tmp_where . ')';
-    				$arrValues = array_merge((array) $arrValues, (array) $tmp_Values);
-    			}
-    			break;
-
+    					$arrValues = array_merge((array) $arrValues, (array) $arrPartVal);
+    				}
+    				break;
 
 
     		default:

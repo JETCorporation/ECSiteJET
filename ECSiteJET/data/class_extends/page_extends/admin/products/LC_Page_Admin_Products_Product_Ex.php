@@ -51,9 +51,7 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
         $masterData = new SC_DB_MasterData_Ex();
         $this->arrProductType = $masterData->getMasterData('mtb_product_type');
         $this->arrDISP = $masterData->getMasterData('mtb_disp');
-        $this->arrALLE = $masterData->getMasterData('mtb_allergy','id','name');
-
-
+        $this->arrALLE = $masterData->getMasterData('mtb_allergy');
         $this->arrSTATUS = $masterData->getMasterData('mtb_status');
         $this->arrSTATUS_IMAGE = $masterData->getMasterData('mtb_status_image');
         $this->arrDELIVERYDATE = $masterData->getMasterData('mtb_delivery_date');
@@ -162,7 +160,7 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
     			'comment4', 'comment5', 'comment6',
     			'sale_limit', 'deliv_date_id', 'maker_id', 'note');
     	$arrList = SC_Utils_Ex::arrayDefineIndexes($arrList, $checkArray);
-
+    	
 
     	// INSERTする値を作成する。
     	$sqlval['name'] = $arrList['name'];
