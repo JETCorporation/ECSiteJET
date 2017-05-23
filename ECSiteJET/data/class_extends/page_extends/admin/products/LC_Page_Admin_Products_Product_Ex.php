@@ -41,22 +41,24 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
      */
     function init()
     {
-        parent::init();
-        $this->tpl_mainpage = 'products/product.tpl';
-        $this->tpl_mainno = 'products';
-        $this->tpl_subno = 'product';
-        $this->tpl_maintitle = '商品管理';
-        $this->tpl_subtitle = '商品登録';
+    	parent::init();
+    	$this->tpl_mainpage = 'products/product.tpl';
+    	$this->tpl_mainno = 'products';
+    	$this->tpl_subno = 'product';
+    	$this->tpl_maintitle = '商品管理';
+    	$this->tpl_subtitle = '商品登録';
 
-        $masterData = new SC_DB_MasterData_Ex();
-        $this->arrProductType = $masterData->getMasterData('mtb_product_type');
-        $this->arrDISP = $masterData->getMasterData('mtb_disp');
-        $this->arrALLE = $masterData->getMasterData('mtb_allergy');
-        $this->arrSTATUS = $masterData->getMasterData('mtb_status');
-        $this->arrSTATUS_IMAGE = $masterData->getMasterData('mtb_status_image');
-        $this->arrDELIVERYDATE = $masterData->getMasterData('mtb_delivery_date');
-        $this->arrMaker = SC_Helper_Maker_Ex::getIDValueList();
-        $this->arrAllowedTag = $masterData->getMasterData('mtb_allowed_tag');
+    	$masterData = new SC_DB_MasterData_Ex();
+    	$this->arrProductType = $masterData->getMasterData('mtb_product_type');
+    	$this->arrDISP = $masterData->getMasterData('mtb_disp');
+    	$this->arrSTATUS = $masterData->getMasterData('mtb_status');
+    	$this->arrSTATUS_IMAGE = $masterData->getMasterData('mtb_status_image');
+    	//追加
+    	$this->arrALLE = $masterData->getMasterData('mtb_allergy');
+
+    	$this->arrDELIVERYDATE = $masterData->getMasterData('mtb_delivery_date');
+    	$this->arrMaker = SC_Helper_Maker_Ex::getIDValueList();
+    	$this->arrAllowedTag = $masterData->getMasterData('mtb_allowed_tag');
     }
 
     /**
@@ -82,7 +84,8 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
     	$objFormParam->addParam('商品カテゴリ', 'category_id', INT_LEN, 'n', array('EXIST_CHECK', 'NUM_CHECK', 'MAX_LENGTH_CHECK'));
     	$objFormParam->addParam('公開・非公開', 'status', INT_LEN, 'n', array('EXIST_CHECK', 'NUM_CHECK', 'MAX_LENGTH_CHECK'));
     	$objFormParam->addParam('商品ステータス', 'product_status', INT_LEN, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'));
-    	$objFormParam->addParam('アレルギー表示', 'allergy', INT_LEN, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'));
+        //追加
+    	$objFormParam->addParam('アレルギー', 'allergy', INT_LEN, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'));
 
     	if (!$arrPost['has_product_class']) {
     		// 新規登録, 規格なし商品の編集の場合
@@ -160,7 +163,6 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
     			'comment4', 'comment5', 'comment6',
     			'sale_limit', 'deliv_date_id', 'maker_id', 'note');
     	$arrList = SC_Utils_Ex::arrayDefineIndexes($arrList, $checkArray);
-
 
     	// INSERTする値を作成する。
     	$sqlval['name'] = $arrList['name'];
@@ -268,9 +270,8 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
 
     		// カテゴリを更新
     		$objDb->updateProductCategories($arrList['category_id'], $product_id);
-    		// カテゴリを更新
     		$objDb->updateProductAllergy($arrList['allergy'], $product_id);
-
+    	}
 
     	// 商品登録の時は規格を生成する。複製の場合は規格も複製されるのでこの処理は不要。
     	if ($arrList['copy_product_id'] == '') {
@@ -301,7 +302,39 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
     	return $product_id;
     }
 
+    /**
+     * 規格を設定していない商品を商品規格テーブルに登録
+     *
+     * @param  array $arrList
+     * @return void
+     */
+    public function lfInsertDummyProductClass($arrList)
+    {
+    	$objQuery =& SC_Query_Ex::getSingletonInstance();
+    	$objDb = new SC_Helper_DB_Ex();
 
+    	// 配列の添字を定義
+    	$checkArray = array('product_class_id', 'product_id', 'product_code', 'stock', 'stock_unlimited', 'price01', 'price02', 'sale_limit', 'deliv_fee', 'point_rate' ,'product_type_id', 'down_filename', 'down_realfilename');
+    	$sqlval = SC_Utils_Ex::sfArrayIntersectKeys($arrList, $checkArray);
+    	$sqlval = SC_Utils_Ex::arrayDefineIndexes($sqlval, $checkArray);
+
+    	$sqlval['stock_unlimited'] = $sqlval['stock_unlimited'] ? UNLIMITED_FLG_UNLIMITED : UNLIMITED_FLG_LIMITED;
+    	$sqlval['creator_id'] = strlen($_SESSION['member_id']) >= 1 ? $_SESSION['member_id'] : '0';
+
+    	if (strlen($sqlval['product_class_id']) == 0) {
+    		$sqlval['product_class_id'] = $objQuery->nextVal('dtb_products_class_product_class_id');
+    		$sqlval['create_date'] = 'CURRENT_TIMESTAMP';
+    		$sqlval['update_date'] = 'CURRENT_TIMESTAMP';
+    		// INSERTの実行
+    		$objQuery->insert('dtb_products_class', $sqlval);
+    	} else {
+    		$sqlval['update_date'] = 'CURRENT_TIMESTAMP';
+    		// UPDATEの実行
+    		$objQuery->update('dtb_products_class', $sqlval, 'product_class_id = ?', array($sqlval['product_class_id']));
+    	}
+    	return $sqlval['product_class_id'];
     }
+
+
 }
 
