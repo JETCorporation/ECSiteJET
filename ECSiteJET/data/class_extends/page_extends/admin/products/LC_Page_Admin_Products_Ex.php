@@ -199,9 +199,12 @@ class LC_Page_Admin_Products_Ex extends LC_Page_Admin_Products
 
 
     			case 'search_allergy':
-    				$where.= ' AND allergy = ?';
-    				$arrValues = $objFormParam->getValue($key);
-    				break;
+    			list($tmp_where, $tmp_Values) = $objDb->sfGetCatWhere($objFormParam->getValue($key));
+    			if ($tmp_where != '') {
+    				$where.= ' AND product_id IN (SELECT product_id FROM dtb_allergy WHERE ' . $tmp_where . ')';
+    				$arrValues = array_merge((array) $arrValues, (array) $tmp_Values);
+    			}
+    			break;
 
 
 

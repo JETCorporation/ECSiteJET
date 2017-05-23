@@ -51,7 +51,9 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
         $masterData = new SC_DB_MasterData_Ex();
         $this->arrProductType = $masterData->getMasterData('mtb_product_type');
         $this->arrDISP = $masterData->getMasterData('mtb_disp');
-        $this->arrALLE = $masterData->getMasterData('mtb_allergy');
+        $this->arrALLE = $masterData->getMasterData('mtb_allergy','id','name');
+
+
         $this->arrSTATUS = $masterData->getMasterData('mtb_status');
         $this->arrSTATUS_IMAGE = $masterData->getMasterData('mtb_status_image');
         $this->arrDELIVERYDATE = $masterData->getMasterData('mtb_delivery_date');
@@ -82,7 +84,7 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
     	$objFormParam->addParam('商品カテゴリ', 'category_id', INT_LEN, 'n', array('EXIST_CHECK', 'NUM_CHECK', 'MAX_LENGTH_CHECK'));
     	$objFormParam->addParam('公開・非公開', 'status', INT_LEN, 'n', array('EXIST_CHECK', 'NUM_CHECK', 'MAX_LENGTH_CHECK'));
     	$objFormParam->addParam('商品ステータス', 'product_status', INT_LEN, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'));
-    	$objFormParam->addParam('アレルギー', 'allergy_id', INT_LEN, 'n', array( 'NUM_CHECK', 'MAX_LENGTH_CHECK'));
+    	$objFormParam->addParam('アレルギー表示', 'allergy', INT_LEN, 'n', array('NUM_CHECK', 'MAX_LENGTH_CHECK'));
 
     	if (!$arrPost['has_product_class']) {
     		// 新規登録, 規格なし商品の編集の場合
@@ -161,6 +163,7 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
     			'sale_limit', 'deliv_date_id', 'maker_id', 'note');
     	$arrList = SC_Utils_Ex::arrayDefineIndexes($arrList, $checkArray);
 
+
     	// INSERTする値を作成する。
     	$sqlval['name'] = $arrList['name'];
     	$sqlval['status'] = $arrList['status'];
@@ -200,7 +203,7 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
 
     		// カテゴリを更新
     		$objDb->updateProductCategories($arrList['category_id'], $product_id);
-    		$objDb->updateProductAllergy($arrList['allergy_id'], $product_id);
+    		$objDb->updateProductAllergy($arrList['allergy'], $product_id);
 
     		// 複製商品の場合には規格も複製する
     		if ($arrList['copy_product_id'] != '' && SC_Utils_Ex::sfIsInt($arrList['copy_product_id'])) {
@@ -268,8 +271,8 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
     		// カテゴリを更新
     		$objDb->updateProductCategories($arrList['category_id'], $product_id);
     		// カテゴリを更新
-    		$objDb->updateProductCategories($arrList['category_id'], $product_id);
-    	}
+    		$objDb->updateProductCategories($arrList['allergy'], $product_id);
+
 
     	// 商品登録の時は規格を生成する。複製の場合は規格も複製されるのでこの処理は不要。
     	if ($arrList['copy_product_id'] == '') {
@@ -300,4 +303,7 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
     	return $product_id;
     }
 
+
+    }
 }
+

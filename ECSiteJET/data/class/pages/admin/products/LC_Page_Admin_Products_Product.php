@@ -251,7 +251,7 @@ class LC_Page_Admin_Products_Product extends LC_Page_Admin_Products_Ex
                 $this->lfInitFormParam($objFormParam, $_POST);
                 $arrForm = $objFormParam->getHashArray();
                 // 入力画面表示設定
-                $this->arrForm = $this->lfSetViewParam_InputPage($objUpFile, $objDownFile, $arrForm);
+                $this-> = $this->lfSetViewParam_InputPage($objUpFile, $objDownFile, $arrForm);
 
                 // 選択された関連商品IDがすでに登録している関連商品と重複していないかチェック
                 $this->lfCheckError_RecommendSelect($this->arrForm, $this->arrErr);
@@ -1042,7 +1042,6 @@ __EOF__;
             // INSERTの実行
             $sqlval['create_date'] = 'CURRENT_TIMESTAMP';
             $objQuery->insert('dtb_products', $sqlval);
-            
 
             $arrList['product_id'] = $product_id;
 

@@ -41,6 +41,12 @@
         <!--{/foreach}-->
     <!--{elseif $key == 'arrCategoryId'}-->
         <!--{* nop *}-->
+
+    <!--{elseif $key == 'allergy'}-->
+         <!--{foreach item=allergyVal from=$item}-->
+            <input type="hidden" name="<!--{$key}-->[]" value="<!--{$allergyVal|h}-->" />
+         <!--{/foreach}-->
+
     <!--{elseif $key == 'arrFile'}-->
         <!--{* nop *}-->
     <!--{else}-->
@@ -86,11 +92,11 @@
  <tr>
             <th>アレルギー表示</th>
             <td>
-                <!--{foreach from=$arrForm.ALLER item=allergy}-->
+                <!--{foreach from=$arrForm.allergy item=allergy}-->
                     <!--{if $allergy != ""}-->
-                       <!--{assign var=key value="search_allergy"}-->
-                <span class="attention"><!--{$arrErr[$key]|h}--></span>
-                    <!--{/if}-->
+                       <!--{assign var=key value="allergy"}-->
+                       <!--{$arrALLE.$allergy}-->
+                  <!--{/if}-->
                 <!--{/foreach}-->
             </td>
         </tr>

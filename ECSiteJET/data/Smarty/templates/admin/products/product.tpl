@@ -149,7 +149,7 @@ function selectAll(target) {
         <tr>
             <th>アレルギー表示</th>
             <td>
-                <!--{html_checkboxes name="allergy" options=$arrALLE selected=$arrForm.allergy_id separator='&nbsp;&nbsp;'}-->
+                <!--{html_checkboxes name="allergy" options=$arrALLE selected=$arrForm.allergy separator='&nbsp;&nbsp;'}-->
             </td>
         </tr>
 
