@@ -160,7 +160,7 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
     			'comment4', 'comment5', 'comment6',
     			'sale_limit', 'deliv_date_id', 'maker_id', 'note');
     	$arrList = SC_Utils_Ex::arrayDefineIndexes($arrList, $checkArray);
-    	
+
 
     	// INSERTする値を作成する。
     	$sqlval['name'] = $arrList['name'];
@@ -269,7 +269,7 @@ class LC_Page_Admin_Products_Product_Ex extends LC_Page_Admin_Products_Product
     		// カテゴリを更新
     		$objDb->updateProductCategories($arrList['category_id'], $product_id);
     		// カテゴリを更新
-    		$objDb->updateProductCategories($arrList['allergy'], $product_id);
+    		$objDb->updateProductAllergy($arrList['allergy'], $product_id);
 
 
     	// 商品登録の時は規格を生成する。複製の場合は規格も複製されるのでこの処理は不要。
