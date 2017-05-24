@@ -25,6 +25,32 @@ require_once CLASS_REALDIR . 'SC_Product.php';
 
 class SC_Product_Ex extends SC_Product
 {
+	 public function getProductAllergy($proAller)
+    {
+        if (empty($proAller)) {
+            return array();
+        }
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
+        $cols = 'product_id,allergy_id';
+        $from = 'dtb_allergy';
+        $where = 'del_flg=0 AND product_id IN (SELECT product_id FROM dtb_allergy WHERE allergy_id IN ('  . SC_Utils_Ex::repeatStrWithSeparator('?', $count($proAller)). '))';
+        $productAllergy = $objQuery->select($cols, $from, $where, $proAller);
+        $results = array();
+
+        foreach ($productAllergy as $Allergy) {
+            $results[$Allergy['product_id']][] = $Allergy['allergy_id'];
+        }
+
+        return $results;
+
+
+
+    }
+
+
+
+
 
 
 }
+

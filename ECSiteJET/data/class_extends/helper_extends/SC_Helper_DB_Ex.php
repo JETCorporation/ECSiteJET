@@ -34,10 +34,29 @@ require_once CLASS_REALDIR . 'helper/SC_Helper_DB.php';
  */
 class SC_Helper_DB_Ex extends SC_Helper_DB
 {
+
+
+	/**
+	 * 商品をカテゴリから削除する.
+	 *
+	 * @param  integer $allergy_id カテゴリID
+	 * @param  integer $product_id  プロダクトID
+	 * @return void
+	 */
+	public function removeProductByAllergy($allergy_id, $product_id)
+	{
+		$objQuery =& SC_Query_Ex::getSingletonInstance();
+		$objQuery->delete('dtb_allergy',
+				'allergy_id = ? AND product_id = ?', array($allergy_id, $product_id));
+	}
+
+
+
+
 	/**
 	 * 商品をカテゴリの先頭に追加する.
 	 *
-	 * @param  integer $category_id カテゴリID
+	 * @param  integer $allergy_id カテゴリID
 	 * @param  integer $product_id  プロダクトID
 	 * @return void
 	 */
@@ -58,7 +77,7 @@ class SC_Helper_DB_Ex extends SC_Helper_DB
 	/**
 	 * 商品カテゴリを更新する.
 	 *
-	 * @param  array   $arrCategory_id 登録するカテゴリIDの配列
+	 * @param  array   $arrallergy_id 登録するカテゴリIDの配列
 	 * @param  integer $product_id     プロダクトID
 	 * @return void
 	 */
