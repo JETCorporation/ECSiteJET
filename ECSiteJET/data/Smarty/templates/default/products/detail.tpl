@@ -176,20 +176,20 @@
                     <!--{/section}-->
                 </dl>
 
- <div id="detailrightbloc">
-                <!--▼商品ステータス-->
-                 <dt>アレルギー表示：</dt>
-                <!--{assign var=all value=$ProductAllergy}-->
-                <!--{if count($ProductAllergy) > 0}-->
-                    <ul >
-                        <!--{foreach from=$ProductAllergy item=Aller}-->
+            <!--▼アレルギー表示-->
+                <dl>アレルギー表示：</dl>
+                <!--{assign var=pl value=$ProductAllergy[$tpl_product_id]}-->
+                <!--{if count($pl) > 0}-->
+                    <ul class="allergy">
+                        <!--{foreach from=$pl item=aller}-->
                         <li>
-                            <!--{$arrALLE.$ProductAllergy}-->
+                           <!--{$arrALLE.$aller}-->
                         </li>
                         <!--{/foreach}-->
                     </ul>
                 <!--{/if}-->
                 <!--▲商品ステータス-->
+
 
 
 

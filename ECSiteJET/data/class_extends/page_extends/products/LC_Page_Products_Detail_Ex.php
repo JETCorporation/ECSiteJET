@@ -197,8 +197,7 @@ class LC_Page_Products_Detail_Ex extends LC_Page_Products_Detail
     	// 関連カテゴリを取得
     	$this->arrRelativeCat = SC_Helper_DB_Ex::sfGetMultiCatTree($product_id);
 
-    	$this->ProductAllergy =  $objProduct->getProductAllergy($proAller);
-
+    	$this->ProductAllergy =  $objProduct->getProductAllergy($product_id);
 
 
     	// 商品ステータスを取得

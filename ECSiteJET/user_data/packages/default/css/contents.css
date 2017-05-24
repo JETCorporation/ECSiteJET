@@ -454,6 +454,13 @@ div.listrightbloc .cartin_btn {
     float: left;
 }
 
+/*アレルギー表示*/
+#detailrightbloc ul.allergy li {
+    margin-right: 1em
+
+}
+
+
 /* 通常価格 */
 #detailrightbloc .normal_price dt,
 #detailrightbloc .normal_price dd {
