@@ -298,6 +298,24 @@
             </tr>
         </table>
 
+
+
+
+        <!---*CSV出力　追加*--->
+
+
+ <th>選択CSV出力</th>
+                <td>
+                    <!--{assign var=key value="arrCsv"}-->
+                    <span class="attention"><!--{$arrErr[$key]}--></span>
+                    <select name="<!--{$key}-->" style="<!--{$arrErr[$key]|sfGetErrorColor}-->">
+                    <option value="">選択してください</option>
+                    <!--{html_options options=$arrList selected=$arrForm[$key].value}-->
+                    </select>
+                   <a class="btn-normal" href="javascript:;" onclick="eccube.fnFormModeSubmit('search_form', 'csv_output', '', ''); return false;">CSVダウンロード</a>
+                </td>
+            </tr>
+
         <div class="btn">
             <p class="page_rows">検索結果表示件数
             <!--{assign var=key value="search_page_max"}-->
