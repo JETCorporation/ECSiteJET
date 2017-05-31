@@ -78,7 +78,7 @@ class LC_Page_Admin_Order_Ex extends LC_Page_Admin_Order
     		case 'csv':
     		case 'delete_all':
     		case 'csv_output':
-
+    		case'exc_ord':
 
 
 
@@ -121,13 +121,19 @@ class LC_Page_Admin_Order_Ex extends LC_Page_Admin_Order
     							$objPurchase->cancelOrder($element['order_id'], ORDER_CANCEL, true);
     						}
     						break;
+
+    					case 'exc_ord':
+    						$ask= $this->lfDoExcelOutput($objFormParam->getValue('order_id'));
+    						 $this->sharp($ask);
+                          SC_Response_Ex::actionExit();
+
+    					  break;
+
+
+
+
     				 case 'csv_output':
-
-
-                	$this->lfDoCsvOutput($objFormParam->getValue('arrCsv'));
-
-                    var_dump($objFormParam->getValue('arrCsv'));
-                    exit();
+    				 	$this->lfDoCsvOutput($objFormParam->getValue('arrCsv'));
 
                     SC_Response_Ex::actionExit();
                break;
@@ -176,6 +182,7 @@ class LC_Page_Admin_Order_Ex extends LC_Page_Admin_Order
     	$objFormParam->addParam('表示件数', 'search_page_max', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
     	$objFormParam->addParam('選択CSV出力', 'arrCsv', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
 
+    	$objFormParam->addParam('Excel出力', 'exc_ord_id', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
 
     	// 受注日
     	$objFormParam->addParam('開始年', 'search_sorderyear', INT_LEN, 'n', array('MAX_LENGTH_CHECK', 'NUM_CHECK'));
@@ -204,6 +211,29 @@ class LC_Page_Admin_Order_Ex extends LC_Page_Admin_Order
     }
 
 
+
+
+    public function sharp($ask){
+    	include_once ( __DIR__ . '/Classes/PHPExcel.php');
+    	include_once ( __DIR__ . '/Classes/PHPExcel/IOFactory.php');
+
+    	//エクセルファイルの新規作成
+    	$excel = new PHPExcel();
+
+    	// シートの設定
+    	$excel->setActiveSheetIndex(0);//何番目のシートか
+    	$sheet = $excel->getActiveSheet();//有効になっているシートを代入
+
+    	// セルに値を入力
+    	$sheet->setCellValue('A1',$ask);//A1のセルにこんにちは！という値を入力
+
+    	// Excel2007形式で出力する
+    	$writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
+    	$writer->save('output.xlsx');
+
+    }
+
+
     public function lfGetSqlData(&$objFormParam)
     {
     	// 編集中データがある場合
@@ -224,6 +254,31 @@ class LC_Page_Admin_Order_Ex extends LC_Page_Admin_Order
 
 
 
+  public function findOrders($where, $arrValues, $limit, $offset, $order)
+    {
+        $objQuery =& SC_Query_Ex::getSingletonInstance();
+        if ($limit != 0) {
+            $objQuery->setLimitOffset($limit, $offset);
+        }
+        $objQuery->setOrder($order);
+
+
+        return $objQuery->select('*', 'dtb_order', $where, $arrValues);
+
+    }
+
+
+public function lfDoExcelOutput($yahoo)
+{
+    $objQuery =& SC_Query_Ex::getSingletonInstance();
+	$sql = "SELECT * FROM dtb_order WHERE order_id IN(".implode(",",$yahoo).") AND del_flg=0";
+	$result = $objQuery->getAll($sql,$arrValues);
+
+return $result;
+}
+
+
+
 public function lfDoCsvOutput($sql_id)
     {
         $objCSV = new SC_Helper_CSV_Ex();
@@ -231,8 +286,6 @@ public function lfDoCsvOutput($sql_id)
         $arrData = $this->lfGetSqlCsv('sql_id = ?', array($sql_id));
 
         $sql = 'SELECT  ' . $arrData[0]['csv_sql'];
-;
-
         $objCSV->sfDownloadCsvFromSql($sql, array(), 'order', null, true);
         SC_Response_Ex::actionExit();
     }

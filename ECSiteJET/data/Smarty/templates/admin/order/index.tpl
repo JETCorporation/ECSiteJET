@@ -306,7 +306,7 @@
         </table>
 
 
-        <input type="hidden" name="<!--{$smarty.const.TRANSACTION_ID_NAME}-->" value="<!--{$transactionid}-->" />
+
 
         <h2>特殊CSV出力</h2>
 
@@ -318,7 +318,7 @@
                     <!--{assign var=key value="arrCsv"}-->
                     <span class="csv_over"><!--{$arrErr[$key]}--></span>
                     <select name="<!--{$key}-->" style="<!--{$arrErr[$key]|sfGetErrorColor}-->">
-                    <option value="">選択してください</option>
+                    <option value="">Choose</option>
                     <!--{html_options options=$arrList selected=$arrForm[$key].value}-->
                     </select>
                     <a class="btn-normal butR" href="javascript:;"   onclick="eccube.fnFormModeSubmit('search_form', 'csv_output', '', ''); return false; ">CSVダウンロード</a>
@@ -374,6 +374,9 @@
                 <a class="btn-normal" href="../contents/csv.php?tpl_subno_csv=order">CSV 出力項目設定</a>
                 <a class="btn-normal" href="javascript:;" onclick="fnSelectCheckSubmit('pdf.php'); return false;"><span>PDF一括出力</span></a>
                 <a class="btn-normal" href="javascript:;" onclick="fnSelectMailCheckSubmit('mail.php'); return false;"><span>メール一括通知</span></a>
+                <a class="btn-normal" href="javascript:;" onclick="eccube.setModeAndSubmit('exc_ord','',''); return false;">エクセル出力</a>
+
+
             </div>
             <!--{if count($arrResults) > 0}-->
 
@@ -398,6 +401,7 @@
                         <!--{include file=$path}-->
                     <!--{else}-->
                         <tr>
+                            <th><label for="excel_check">選択</label> <input type="checkbox" name="excel_check" id="excel_check" onclick="eccube.checkAllBox(this, 'input[name=exc_ord_id[]]')" /></th>
                             <th>受注日</th>
                             <th>注文番号</th>
                             <th>お名前</th>
@@ -414,6 +418,7 @@
                         <!--{section name=cnt loop=$arrResults}-->
                             <!--{assign var=status value="`$arrResults[cnt].status`"}-->
                             <tr style="background:<!--{$arrORDERSTATUS_COLOR[$status]}-->;">
+                                <td class="center"><input type="checkbox" name="exc_ord_id[]" value="<!--{$arrResults[cnt].order_id}-->" id="exc_ord_id_<!--{$arrResults[cnt].order_id}-->"/><label for="exc_ord_id_<!--{$arrResults[cnt].order_id}-->"></td>
                                 <td class="center"><!--{$arrResults[cnt].create_date|sfDispDBDate}--></td>
                                 <td class="center"><!--{$arrResults[cnt].order_id}--></td>
                                 <td class="center"><!--{$arrResults[cnt].order_name01|h}--> <!--{$arrResults[cnt].order_name02|h}--></td>
