@@ -124,7 +124,10 @@ class LC_Page_Admin_Order_Ex extends LC_Page_Admin_Order
 
     					case 'exc_ord':
     						$ask= $this->lfDoExcelOutput($objFormParam->getValue('exc_ord_id'));
-    						 $this->sharp($ask);
+
+
+
+    						$this->sharp($ask);
                           SC_Response_Ex::actionExit();
 
     					  break;
@@ -238,6 +241,18 @@ $host = array('order_id', 'order_temp_id', 'customer_id',' message',' order_name
 $objSheet->fromArray($host,'A1');
 foreach($array as $joy){
    $objSheet->fromArray($joy,null,'A2');
+}
+$thig = "customer_id";
+$thiz = "name";
+$objSheet->setCellValue('A3',$thig);
+$objSheet->setCellValue('A4',$thiz);
+foreach($array as $hogo){
+	$shis = $hogo['customer_id'];
+	$shaz = $hogo['order_name01'];
+	$shuz = $hogo['order_name02'];
+	$objSheet->setCellValue('B3',$shis);
+	$objSheet->setCellValue('B4',$shaz);
+	$objSheet->setCellValue('C4',$shuz);
 }
 
 // A1セルに「テスト」という文字列を設定
