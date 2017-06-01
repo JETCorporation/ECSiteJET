@@ -239,21 +239,52 @@ $host = array('order_id', 'order_temp_id', 'customer_id',' message',' order_name
 'discount', 'deliv_id', 'deliv_fee', 'charge', 'use_point', 'add_point', 'birth_point', 'tax', 'total', 'payment_total', 'payment_id', 'payment_method', 'note', 'status', 'create_date',
 'update_date', 'commit_datepayment_date', 'device_type_id', 'del_flg', 'memo01', 'memo02', 'memo03', 'memo04','memo05', 'memo06', 'memo07', 'memo08', 'memo09', 'memo10');
 $objSheet->fromArray($host,'A1');
+
+$row = 1;
 foreach($array as $joy){
-   $objSheet->fromArray($joy,null,'A2');
+	$col = 0;
+
+	foreach($joy as $momo){
+ $hug= $objSheet->setCellValueByColumnAndRow($col++, $row, $momo,'A2');
+	}
+$row++;
 }
-$thig = "customer_id";
-$thiz = "name";
-$objSheet->setCellValue('A3',$thig);
-$objSheet->setCellValue('A4',$thiz);
-foreach($array as $hogo){
-	$shis = $hogo['customer_id'];
-	$shaz = $hogo['order_name01'];
-	$shuz = $hogo['order_name02'];
-	$objSheet->setCellValue('B3',$shis);
-	$objSheet->setCellValue('B4',$shaz);
-	$objSheet->setCellValue('C4',$shuz);
+
+
+foreach($array as $dio){
+	$shif = $dio['customer_id'];
 }
+
+
+foreach($array as $void){
+	$has = $void['order_name01'];
+	$biz = $void['order_name02'];
+	$shushu = $has . $biz;
+}
+
+
+$row = 1;
+foreach($shif as $do){
+	$col = 0;
+
+	foreach($do as $mimi){
+		
+		$mura= $objSheet->setCellValueByColumnAndRow($col++, $row, $mimi);
+	}
+	$row++;
+}
+
+
+$row = 1;
+foreach($shushu as $mok){
+	$col = 0;
+
+	foreach($mok as $hus){
+		$maru= $objSheet->setCellValueByColumnAndRow($col++, $row, $hus);
+	}
+	$row++;
+}
+
 
 // A1セルに「テスト」という文字列を設定
 
@@ -275,13 +306,11 @@ unset($objWriter);
 unset($objSheet);
 unset($objExcel);
 
+return array($hug,$mura,$maru);
 
 
 
-
-}
-
-
+    }
     public function lfGetSqlData(&$objFormParam)
     {
     	// 編集中データがある場合
