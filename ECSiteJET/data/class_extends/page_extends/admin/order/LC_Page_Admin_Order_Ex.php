@@ -123,7 +123,7 @@ class LC_Page_Admin_Order_Ex extends LC_Page_Admin_Order
     						break;
 
     					case 'exc_ord':
-    						$ask= $this->lfDoExcelOutput($objFormParam->getValue('order_id'));
+    						$ask= $this->lfDoExcelOutput($objFormParam->getValue('exc_ord_id'));
     						 $this->sharp($ask);
                           SC_Response_Ex::actionExit();
 
@@ -213,25 +213,58 @@ class LC_Page_Admin_Order_Ex extends LC_Page_Admin_Order
 
 
 
-    public function sharp($ask){
-    	include_once ( __DIR__ . '/Classes/PHPExcel.php');
-    	include_once ( __DIR__ . '/Classes/PHPExcel/IOFactory.php');
+    public function sharp($array){
 
-    	//エクセルファイルの新規作成
-    	$excel = new PHPExcel();
 
-    	// シートの設定
-    	$excel->setActiveSheetIndex(0);//何番目のシートか
-    	$sheet = $excel->getActiveSheet();//有効になっているシートを代入
+    	require_once HTML_REALDIR . '/data/downloads/module/Classes/PHPExcel.php';
+    	require_once HTML_REALDIR . '/data/downloads/module/Classes/PHPExcel/IOFactory.php';
+    	// キャッシュメモリ設定（デフォルト:1MB → 256MB）
+// ※キャッシュを有効にした場合、列の挿入(insertNewColumnBefore)・削除(removeColumn)、行の挿入(insertNewRowBefore)・削除(removeRow)が正常に動作しないため注意すること！！
+$cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_phpTemp;
+$cacheSettings = array('memoryCacheSize' => '256MB');
+ PHPExcel_Settings::setCacheStorageMethod($cacheMethod, $cacheSettings);
 
-    	// セルに値を入力
-    	$sheet->setCellValue('A1',$ask);//A1のセルにこんにちは！という値を入力
+// Excelファイルの新規作成
+$objExcel = new PHPExcel();
 
-    	// Excel2007形式で出力する
-    	$writer = PHPExcel_IOFactory::createWriter($excel, 'Excel2007');
-    	$writer->save('output.xlsx');
+// シートの設定
+$objExcel->setActiveSheetIndex(0);
+$objSheet = $objExcel->getActiveSheet();
+$host = array('order_id', 'order_temp_id', 'customer_id',' message',' order_name01',' order_name02', 'order_kana01',' order_kana02', 'order_company_name', 'order_email',
+		'order_tel01', 'order_tel02', 'order_tel03', 'order_fax01', 'order_fax02', 'order_fax03',
+		 'order_zip01', 'order_zip02', 'order_zipcode', 'order_country_id', 'order_pref', 'order_addr01', 'order_addr02', 'order_sex', 'order_birth', 'order_job', 'subtotal',
+'discount', 'deliv_id', 'deliv_fee', 'charge', 'use_point', 'add_point', 'birth_point', 'tax', 'total', 'payment_total', 'payment_id', 'payment_method', 'note', 'status', 'create_date',
+'update_date', 'commit_datepayment_date', 'device_type_id', 'del_flg', 'memo01', 'memo02', 'memo03', 'memo04','memo05', 'memo06', 'memo07', 'memo08', 'memo09', 'memo10');
+$objSheet->fromArray($host,'A1');
+foreach($array as $joy){
+   $objSheet->fromArray($joy,null,'A2');
+}
 
-    }
+// A1セルに「テスト」という文字列を設定
+
+// Excelファイルのダウンロード
+$objWriter = PHPExcel_IOFactory::createWriter($objExcel, 'Excel2007');
+header("Pragma: public");
+header("Expires: 0");
+header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+header("Content-Type: application/force-download");
+header("Content-Type: application/octet-stream");
+header("Content-Type: application/download");
+header("Content-Disposition: attachment;filename=" . "TestDownload.xlsx");
+header("Content-Transfer-Encoding: binary ");
+$objWriter->save('php://output');
+
+// メモリの開放
+$objExcel->disconnectWorksheets();
+unset($objWriter);
+unset($objSheet);
+unset($objExcel);
+
+
+
+
+
+}
 
 
     public function lfGetSqlData(&$objFormParam)
