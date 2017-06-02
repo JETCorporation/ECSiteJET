@@ -55,6 +55,40 @@
         fnOpenPdfSettingPage(action);
     }
 
+
+   function fnSelectExcelCheckSubmit(action){
+
+        var fm = document.form1;
+
+        if (!fm["exc_ord_id[]"]) {
+            return false;
+        }
+
+        var checkflag = false;
+        var max = fm["exc_ord_id[]"].length;
+
+        if (max) {
+            for (var i=0; i<max; i++) {
+                if(fm["exc_ord_id[]"][i].checked == true){
+                    checkflag = true;
+                }
+            }
+        } else {
+            if(fm["exc_ord_id[]"].checked == true) {
+                checkflag = true;
+            }
+        }
+
+        if(!checkflag){
+            alert('チェックボックスが選択されていません');
+            return false;
+        }
+
+        fm.mode.value="exc_ord";
+        fm.submit();
+    }
+
+
     function fnOpenPdfSettingPage(action){
         var fm = document.form1;
         eccube.openWindow("about:blank", "pdf_input", "620","650");
@@ -108,6 +142,8 @@
         fm.action=action;
         fm.submit();
     }
+
+
 
 
 //-->
@@ -374,7 +410,7 @@
                 <a class="btn-normal" href="../contents/csv.php?tpl_subno_csv=order">CSV 出力項目設定</a>
                 <a class="btn-normal" href="javascript:;" onclick="fnSelectCheckSubmit('pdf.php'); return false;"><span>PDF一括出力</span></a>
                 <a class="btn-normal" href="javascript:;" onclick="fnSelectMailCheckSubmit('mail.php'); return false;"><span>メール一括通知</span></a>
-                <a class="btn-normal" href="javascript:;" onclick="eccube.setModeAndSubmit('exc_ord','',''); return false;">エクセル出力</a>
+                <a class="btn-normal" href="javascript:;" onclick="fnSelectExcelCheckSubmit('exc_ord','',''); return false;">エクセル出力</a>
 
 
             </div>
@@ -419,6 +455,8 @@
                             <!--{assign var=status value="`$arrResults[cnt].status`"}-->
                             <tr style="background:<!--{$arrORDERSTATUS_COLOR[$status]}-->;">
                                 <td class="center"><input type="checkbox" name="exc_ord_id[]" value="<!--{$arrResults[cnt].order_id}-->" id="exc_ord_id_<!--{$arrResults[cnt].order_id}-->"/><label for="exc_ord_id_<!--{$arrResults[cnt].order_id}-->"></td>
+
+
                                 <td class="center"><!--{$arrResults[cnt].create_date|sfDispDBDate}--></td>
                                 <td class="center"><!--{$arrResults[cnt].order_id}--></td>
                                 <td class="center"><!--{$arrResults[cnt].order_name01|h}--> <!--{$arrResults[cnt].order_name02|h}--></td>

@@ -216,7 +216,7 @@ class LC_Page_Admin_Order_Ex extends LC_Page_Admin_Order
 
 
 
-    public function sharp($array){
+public function sharp($array){
 
 
     	require_once HTML_REALDIR . '/data/downloads/module/Classes/PHPExcel.php';
@@ -233,60 +233,44 @@ $objExcel = new PHPExcel();
 // シートの設定
 $objExcel->setActiveSheetIndex(0);
 $objSheet = $objExcel->getActiveSheet();
+
+
+
+
+
 $host = array('order_id', 'order_temp_id', 'customer_id',' message',' order_name01',' order_name02', 'order_kana01',' order_kana02', 'order_company_name', 'order_email',
 		'order_tel01', 'order_tel02', 'order_tel03', 'order_fax01', 'order_fax02', 'order_fax03',
 		 'order_zip01', 'order_zip02', 'order_zipcode', 'order_country_id', 'order_pref', 'order_addr01', 'order_addr02', 'order_sex', 'order_birth', 'order_job', 'subtotal',
 'discount', 'deliv_id', 'deliv_fee', 'charge', 'use_point', 'add_point', 'birth_point', 'tax', 'total', 'payment_total', 'payment_id', 'payment_method', 'note', 'status', 'create_date',
-'update_date', 'commit_datepayment_date', 'device_type_id', 'del_flg', 'memo01', 'memo02', 'memo03', 'memo04','memo05', 'memo06', 'memo07', 'memo08', 'memo09', 'memo10');
+'update_date', 'commit_datepayment_date', 'device_type_id', 'del_flg', 'memo01', 'memo02', 'memo03', 'memo04','memo05', 'memo06', 'memo07', 'memo08', 'memo09', 'memo10','',
+'customer_id', 'name01', 'name02', 'kana01', 'kana02', 'company_name', 'zip01', 'zip02', 'zipcode','country_id', 'pref', 'addr01', 'addr02', 'email', 'email_mobile', 'tel01', 'tel02', 'tel03', 'fax01', 'fax02',
+ 'fax03','sex', 'job', 'birth', 'password', 'reminder', 'reminder_answer', 'salt', 'secret_key', 'first_buy_date','last_buy_date', 'buy_times', 'buy_total', 'point', 'note', 'status', 'create_date', 'update_date', 'del_flg',
+'mobile_phone_id', 'mailmaga_flg', 'login_id');
+
 $objSheet->fromArray($host,'A1');
 
-$row = 1;
+$borderStyle = array(
+'borders' => array(
+'allborders' => array('style' => PHPExcel_Style_Border::BORDER_THIN)
+)
+);
+$jik = count($array)+1;
+
+
+$objSheet->getStyle('A1:CU'.$jik)->applyFromArray($borderStyle);
+
+
+$row = 2;
 foreach($array as $joy){
 	$col = 0;
 
 	foreach($joy as $momo){
- $hug= $objSheet->setCellValueByColumnAndRow($col++, $row, $momo,'A2');
-	}
+		$objSheet->setCellValueByColumnAndRow($col++, $row, $momo );
+}
 $row++;
 }
 
 
-foreach($array as $dio){
-	$shif = $dio['customer_id'];
-}
-
-
-foreach($array as $void){
-	$has = $void['order_name01'];
-	$biz = $void['order_name02'];
-	$shushu = $has . $biz;
-}
-
-
-$row = 1;
-foreach($shif as $do){
-	$col = 0;
-
-	foreach($do as $mimi){
-		
-		$mura= $objSheet->setCellValueByColumnAndRow($col++, $row, $mimi);
-	}
-	$row++;
-}
-
-
-$row = 1;
-foreach($shushu as $mok){
-	$col = 0;
-
-	foreach($mok as $hus){
-		$maru= $objSheet->setCellValueByColumnAndRow($col++, $row, $hus);
-	}
-	$row++;
-}
-
-
-// A1セルに「テスト」という文字列を設定
 
 // Excelファイルのダウンロード
 $objWriter = PHPExcel_IOFactory::createWriter($objExcel, 'Excel2007');
@@ -306,7 +290,7 @@ unset($objWriter);
 unset($objSheet);
 unset($objExcel);
 
-return array($hug,$mura,$maru);
+
 
 
 
@@ -348,8 +332,8 @@ return array($hug,$mura,$maru);
 public function lfDoExcelOutput($yahoo)
 {
     $objQuery =& SC_Query_Ex::getSingletonInstance();
-	$sql = "SELECT * FROM dtb_order WHERE order_id IN(".implode(",",$yahoo).") AND del_flg=0";
-	$result = $objQuery->getAll($sql,$arrValues);
+	$sql = "SELECT * FROM dtb_order LEFT JOIN dtb_customer ON (dtb_order.customer_id = dtb_customer.customer_id) WHERE order_id IN(".implode(",",$yahoo).")  ";
+    $result = $objQuery->getAll($sql,$arrValues);
 
 return $result;
 }
