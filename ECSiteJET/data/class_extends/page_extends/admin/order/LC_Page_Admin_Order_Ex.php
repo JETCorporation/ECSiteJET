@@ -221,6 +221,7 @@ public function sharp($array){
 
     	require_once HTML_REALDIR . '/data/downloads/module/Classes/PHPExcel.php';
     	require_once HTML_REALDIR . '/data/downloads/module/Classes/PHPExcel/IOFactory.php';
+
     	// キャッシュメモリ設定（デフォルト:1MB → 256MB）
 // ※キャッシュを有効にした場合、列の挿入(insertNewColumnBefore)・削除(removeColumn)、行の挿入(insertNewRowBefore)・削除(removeRow)が正常に動作しないため注意すること！！
 $cacheMethod = PHPExcel_CachedObjectStorageFactory::cache_to_phpTemp;
@@ -233,8 +234,6 @@ $objExcel = new PHPExcel();
 // シートの設定
 $objExcel->setActiveSheetIndex(0);
 $objSheet = $objExcel->getActiveSheet();
-
-
 
 
 
@@ -270,8 +269,16 @@ foreach($array as $joy){
 $row++;
 }
 
-
-
+$d = new PHPExcel_Worksheet_Drawing();
+$d->setPath(USER_REALDIR.'/packages/admin/img/img/nikukyu02-001.gif');
+//↓これが必要
+$d->setResizeProportional(false);
+//↑これが必要
+$d->setWidth(50);
+$d->setHeight(50);
+$d->setCoordinates('B5');
+$d->setWorksheet(
+		$objExcel->getActiveSheet(B5));
 // Excelファイルのダウンロード
 $objWriter = PHPExcel_IOFactory::createWriter($objExcel, 'Excel2007');
 header("Pragma: public");
