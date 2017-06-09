@@ -36,7 +36,18 @@ class SC_Helper_DB_Ex extends SC_Helper_DB
 {
 
 
+	public function sfGetSTWhere($Status_id)
+	{
+		// 子カテゴリIDの取得
+		$objQuery =& SC_Query_Ex::getSingletonInstance();
+      	$sql = "SELECT id FROM mtb_status WHERE id  ";
 
+		$arrRet = 	$objQuery->getAll($sql, array($Status_id));
+
+		$where = 'category_id IN (' . SC_Utils_Ex::repeatStrWithSeparator('?', count($arrRet)) . ')';
+
+		return array($where, $arrRet);
+	}
 
 
 

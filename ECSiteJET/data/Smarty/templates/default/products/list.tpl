@@ -67,6 +67,8 @@
         <input type="hidden" name="mode" value="<!--{$mode|h}-->" />
         <!--{* ▼検索条件 *}-->
         <input type="hidden" name="category_id" value="<!--{$arrSearchData.category_id|h}-->" />
+         <input type="hidden" name="status_id" value="<!--{$arrSearchData.status_id|h}-->" />
+
         <input type="hidden" name="maker_id" value="<!--{$arrSearchData.maker_id|h}-->" />
         <input type="hidden" name="name" value="<!--{$arrSearchData.name|h}-->" />
         <!--{* ▲検索条件 *}-->
@@ -96,15 +98,37 @@
         <div class="pagenumber_area clearfix">
             <div class="change">
                 <!--{if $orderby != 'price'}-->
+
                     <a href="javascript:fnChangeOrderby('price');">価格順</a>
+
                 <!--{else}-->
+
                     <strong>価格順</strong>
+
                 <!--{/if}-->&nbsp;
+
                 <!--{if $orderby != "date"}-->
+
                         <a href="javascript:fnChangeOrderby('date');">新着順</a>
+
                 <!--{else}-->
+
                     <strong>新着順</strong>
+
                 <!--{/if}-->
+
+                <!--◆名前ソート追加◆-->
+
+                <!--{if $orderby != "name"}-->
+
+                        <a href="javascript:fnChangeOrderby('name');">名前順</a>
+
+                <!--{else}-->
+
+                    <strong>名前順</strong>
+
+                <!--{/if}-->
+
                 表示件数
                 <select name="disp_number" onchange="javascript:fnChangeDispNumber(this.value);">
                     <!--{foreach from=$arrPRODUCTLISTMAX item="dispnum" key="num"}-->
@@ -168,17 +192,6 @@
 
 
 
-                    <div class="listrightbloc">
-                    <!--▼商品ステータス-->
-                    <!--{if count($productStatus[$id]) > 0}-->
-                        <ul class="status_icon clearfix">
-                            <!--{foreach from=$productStatus[$id] item=status}-->
-                                <li>
-                                    <img src="<!--{$TPL_URLPATH}--><!--{$arrSTATUS_IMAGE[$status]}-->" width="60" height="17" alt="<!--{$arrSTATUS[$status]}-->"/>
-                                </li>
-                            <!--{/foreach}-->
-                        </ul>
-                    <!--{/if}-->
 
 
 

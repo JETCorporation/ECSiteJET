@@ -402,10 +402,10 @@ __EOS__;
 
         // 税込計算
         if(!SC_Utils_Ex::isBlank($arrProduct['price01'])) {
-            $arrProduct['price01_inctax'] = SC_Helper_TaxRule_Ex::sfCalcIncTax($arrProduct['price01'], $arrProduct['product_id'], $productClassId);        
+            $arrProduct['price01_inctax'] = SC_Helper_TaxRule_Ex::sfCalcIncTax($arrProduct['price01'], $arrProduct['product_id'], $productClassId);
         }
         if(!SC_Utils_Ex::isBlank($arrProduct['price02'])) {
-            $arrProduct['price02_inctax'] = SC_Helper_TaxRule_Ex::sfCalcIncTax($arrProduct['price02'], $arrProduct['product_id'], $productClassId);        
+            $arrProduct['price02_inctax'] = SC_Helper_TaxRule_Ex::sfCalcIncTax($arrProduct['price02'], $arrProduct['product_id'], $productClassId);
         }
 
         return $arrProduct;
@@ -635,6 +635,9 @@ __EOS__;
                 SELECT
                      dtb_products.product_id
                     ,dtb_products.name
+
+                    ,dtb_products.kana
+
                     ,dtb_products.maker_id
                     ,dtb_products.status
                     ,dtb_products.comment1

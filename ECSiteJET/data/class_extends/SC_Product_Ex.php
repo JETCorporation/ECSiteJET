@@ -25,7 +25,24 @@ require_once CLASS_REALDIR . 'SC_Product.php';
 
 class SC_Product_Ex extends SC_Product
     {
- public function getProductAllergy($proAller)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    	public function getProductAllergy($proAller)
    {
        if (empty($proAller)) {
           return array();

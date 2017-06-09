@@ -200,7 +200,7 @@ class LC_Page_Products_List_Ex extends LC_Page_Products_List
     	$arrStatus_id = $objQuery->getAll($sql, array($Status_id));
 
        if (empty($arrStatus_id)) {
-    		SC_Utils_Ex::sfDispSiteError(FREE_ERROR_MSG, '', false, 'この商品ステータスIDは存在しません。');;
+    		SC_Utils_Ex::sfDispSiteError(FREE_ERROR_MSG, '', false, 'この商品ステータスIDは存在しません');;
 
     	}
 
@@ -217,8 +217,11 @@ class LC_Page_Products_List_Ex extends LC_Page_Products_List
     			'where'             => '',
     			'arrval'            => array(),
     			'where_category'    => '',
-    			'arrvalCategory'    => array()
-    	);
+    			'arrvalCategory'    => array(),
+    			'where_status'    => '',
+    			'arrvalStatus'    => array()
+    		);
+
 
 
 
@@ -234,12 +237,16 @@ class LC_Page_Products_List_Ex extends LC_Page_Products_List
     		$searchCondition['where'] .= ' AND EXISTS (SELECT * FROM dtb_product_categories WHERE ' . $searchCondition['where_category'] . ' AND product_id = alldtl.product_id)';
     		$searchCondition['arrval'] = array_merge($searchCondition['arrval'], $searchCondition['arrvalCategory']);
     	}
-    //追加
+    //商品ステータスでの絞り込み
 
     	if ($arrSearchData['status_id']) {
     		$searchCondition['where'] .= 'AND product_id IN (SELECT product_id FROM dtb_product_status WHERE product_status_id = ? AND del_flg = 0)';
     		$searchCondition['arrval'][] = $arrSearchData['status_id'];
     	}
+
+
+
+
     	// 商品名をwhere文に
     	$name = $arrSearchData['name'];
     	$name = str_replace(',', '', $name);
@@ -275,6 +282,72 @@ class LC_Page_Products_List_Ex extends LC_Page_Products_List
 
 
 
+    /* 商品一覧の表示 */
+    public function lfGetProductsList($searchCondition, $disp_number, $startno, &$objProduct)
+    {
+    	$objQuery =& SC_Query_Ex::getSingletonInstance();
+
+    	$arrOrderVal = array();
+
+    	// 表示順序
+    	switch ($this->orderby) {
+    		// 販売価格が安い順
+    		case 'price':
+    			$objProduct->setProductsOrder('price02', 'dtb_products_class', 'ASC');
+    			break;
+
+    			// 新着順
+    		case 'date':
+    			$objProduct->setProductsOrder('create_date', 'dtb_products', 'DESC');
+    			break;
+
+    			//名前順
+    			case 'name':
+    				$objProduct->setProductsOrder('name', 'dtb_products', 'ASC');
+    				break;
+
+
+
+
+
+    		default:
+    			if (strlen($searchCondition['where_category']) >= 1) {
+    				$dtb_product_categories = '(SELECT * FROM dtb_product_categories WHERE '.$searchCondition['where_category'].')';
+    				$arrOrderVal           = $searchCondition['arrvalCategory'];
+    			} else {
+    				$dtb_product_categories = 'dtb_product_categories';
+    			}
+
+
+    			$col = 'T3.rank * 2147483648 + T2.rank';
+    			$from = "$dtb_product_categories T2 JOIN dtb_category T3 ON T2.category_id = T3.category_id";
+    			$where = 'T2.product_id = alldtl.product_id';
+    			$objQuery->setOrder('T3.rank DESC, T2.rank DESC');
+    			$sub_sql = $objQuery->getSql($col, $from, $where);
+    			$sub_sql = $objQuery->dbFactory->addLimitOffset($sub_sql, 1);
+
+    			$objQuery->setOrder("($sub_sql) DESC ,product_id DESC");
+    			break;
+
+
+
+    	}
+    	// 取得範囲の指定(開始行番号、行数のセット)
+    	$objQuery->setLimitOffset($disp_number, $startno);
+    	$objQuery->setWhere($searchCondition['where']);
+
+    	// 表示すべきIDとそのIDの並び順を一気に取得
+    	$arrProductId = $objProduct->findProductIdsOrder($objQuery, array_merge($searchCondition['arrval'], $arrOrderVal));
+
+    	$objQuery =& SC_Query_Ex::getSingletonInstance();
+    	$arrProducts = $objProduct->getListByProductIds($objQuery, $arrProductId);
+
+    	// 規格を設定
+    	$objProduct->setProductsClassByProductIds($arrProductId);
+    	$arrProducts['productStatus'] = $objProduct->getProductStatus($arrProductId);
+
+    	return $arrProducts;
+    }
 
 
 
