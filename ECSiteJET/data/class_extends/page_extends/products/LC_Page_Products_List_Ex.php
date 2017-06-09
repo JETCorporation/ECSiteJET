@@ -200,7 +200,7 @@ class LC_Page_Products_List_Ex extends LC_Page_Products_List
     	$arrStatus_id = $objQuery->getAll($sql, array($Status_id));
 
        if (empty($arrStatus_id)) {
-    		SC_Utils_Ex::sfDispSiteError(CATEGORY_NOT_FOUND);
+    		SC_Utils_Ex::sfDispSiteError(FREE_ERROR_MSG, '', false, 'この商品ステータスIDは存在しません。');;
 
     	}
 
