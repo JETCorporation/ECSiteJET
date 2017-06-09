@@ -36,6 +36,44 @@ class SC_Helper_DB_Ex extends SC_Helper_DB
 {
 
 
+
+
+
+
+
+
+ public function sfGetStatusId($product_id, $Status_id = 0, $closed = false)
+    {
+        if ($closed) {
+            $status = '';
+        } else {
+            $status = 'status = 1';
+        }
+        $Status_id = (int) $Status_id;
+        $product_id = (int) $product_id;
+        if (SC_Utils_Ex::sfIsInt($Status_id) && $Status_id != 0 && SC_Helper_DB_Ex::sfIsRecord('mtb_status','id', $Status_id)) {
+            $Status_id = array($status_id);
+        } elseif (SC_Utils_Ex::sfIsInt($product_id) && $product_id != 0 && SC_Helper_DB_Ex::sfIsRecord('dtb_products','product_id', $product_id, $status)) {
+            $objQuery =& SC_Query_Ex::getSingletonInstance();
+            $Status_id = $objQuery->getCol('Status_id', 'dtb_product_status', 'product_id = ?', array($product_id));
+        } else {
+            // 不正な場合は、空の配列を返す。
+            $Status_id = array();
+        }
+
+        return $Status_id;
+    }
+
+
+
+
+
+
+
+
+
+
+
 	/**
 	 * 商品をカテゴリから削除する.
 	 *

@@ -1,5 +1,4 @@
-<?php
-/*
+<!--{*
  * This file is part of EC-CUBE
  *
  * Copyright(c) 2000-2013 LOCKON CO.,LTD. All Rights Reserved.
@@ -19,41 +18,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
- */
-
-require_once CLASS_REALDIR . 'pages/frontparts/bloc/LC_Page_FrontParts_Bloc_Recommend.php';
-
-/**
- * Recommend のページクラス(拡張).
- *
- * LC_Page_FrontParts_Bloc_Recommend をカスタマイズする場合はこのクラスを編集する.
- *
- * @package Page
- * @author LOCKON CO.,LTD.
- * @version $Id: LC_Page_FrontParts_Bloc__Ex.php -1   $
- */
-class LC_Page_FrontParts_Bloc_Recommend_Ex extends LC_Page_FrontParts_Bloc_Recommend
-{
-    /**
-     * Page を初期化する.
-     *
-     * @return void
-     */
-    function init()
-    {
-        parent::init();
-    }
-
-    /**
-     * Page のプロセス.
-     *
-     * @return void
-     */
-    function process()
-    {
-        parent::process();
-    }
+ *}-->
 
 
+<!--{strip}-->
+    <div class="block_outer">
+        <div id="category_area">
+            <div class="block_body">
 
-}
+            <h2>商品ステータス</h2>
+                 <!--{foreach from=$arrSTATUS item=var key=stat}-->
+                <li>
+
+               <p><a href="<!--{$smarty.const.ROOT_URLPATH}-->products/list.php?status_id=<!--{$stat}-->"</a></p>
+
+                <!--{$var}-->
+                </li>
+                 <!--{/foreach}-->
+
+
+            </div>
+        </div>
+     </div>
+
+<!--{/strip}-->

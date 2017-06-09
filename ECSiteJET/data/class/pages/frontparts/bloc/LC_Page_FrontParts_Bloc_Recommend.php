@@ -64,8 +64,7 @@ class LC_Page_FrontParts_Bloc_Recommend extends LC_Page_FrontParts_Bloc_Ex
         $objSiteInfo = SC_Helper_DB_Ex::sfGetBasisData();
         $this->arrInfo = $objSiteInfo->data;
 
-        //おすすめ商品表示
-        $this->arrBestProducts = $this->lfGetRanking();
+
     }
 
     /**

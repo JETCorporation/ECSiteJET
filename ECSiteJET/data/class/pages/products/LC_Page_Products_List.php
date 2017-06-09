@@ -91,6 +91,10 @@ class LC_Page_Products_List extends LC_Page_Ex
      */
     public function action()
     {
+
+
+
+
         //決済処理中ステータスのロールバック
         $objPurchase = new SC_Helper_Purchase_Ex();
         $objPurchase->cancelPendingOrder(PENDING_ORDER_CANCEL_FLAG);
@@ -305,6 +309,7 @@ class LC_Page_Products_List extends LC_Page_Ex
             return '検索結果';
         } elseif ($category_id == 0) {
             return '全商品';
+
         } else {
             $objCategory = new SC_Helper_Category_Ex();
             $arrCat = $objCategory->get($category_id);
