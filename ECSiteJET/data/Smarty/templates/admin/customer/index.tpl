@@ -120,6 +120,7 @@
                 <col width="7%" />
                 <col width="7%" />
                 <tr>
+
                     <th rowspan="2">種別</th>
                     <th>会員ID</th>
                     <th rowspan="2">お名前/(フリガナ)</th>
@@ -127,6 +128,7 @@
                     <th>TEL</th>
                     <th rowspan="2">編集</th>
                     <th rowspan="2">削除</th>
+                    <th rowspan="2">購数</th>
                 </tr>
                 <tr>
                     <th>都道府県</th>
@@ -134,19 +136,25 @@
                 </tr>
                 <!--{foreach from=$arrData item=row}-->
                     <tr>
-                        <td class="center" rowspan="2"><!--{if $row.status eq 1}-->仮<!--{else}-->本<!--{/if}--></td>
+
+                        <td class="center" rowspan="2"><!--{if $row.status eq 1}-->仮<!--{/if}--><!--{if $row.status eq 2}-->本<!--{else}-->済<!--{/if}--></td>
                         <td><!--{$row.customer_id|h}--></td>
                         <td rowspan="2"><!--{$row.name01|h}--> <!--{$row.name02|h}--><br />(<!--{$row.kana01|h}--> <!--{$row.kana02|h}-->)</td>
                         <td class="center" rowspan="2"><!--{$arrSex[$row.sex]|h}--></td>
                         <td><!--{$row.tel01|h}-->-<!--{$row.tel02|h}-->-<!--{$row.tel03|h}--></td>
                         <td class="center" rowspan="2"><span class="icon_edit"><a href="#" onclick="return fnEdit('<!--{$row.customer_id|h}-->');">編集</a></span></td>
                         <td class="center" rowspan="2"><span class="icon_delete"><a href="#" onclick="return fnDelete('<!--{$row.customer_id|h}-->');">削除</a></span></td>
+                        <td class="center" rowspan="2"><!--{$row.buy_times|h}--></td>
                     </tr>
                     <tr>
                         <td><!--{assign var=pref value=$row.pref}--><!--{$arrPref[$pref]}--></td>
                         <td><!--{mailto address=$row.email encode="javascript"}--><!--{if $row.status eq 1}--><br /><a href="#" onclick="return fnReSendMail('<!--{$row.customer_id|h}-->');">仮登録メール再送</a><!--{/if}--></td>
                     </tr>
                 <!--{/foreach}-->
+
+
+
+
             </table>
             <!--検索結果表示テーブル-->
 

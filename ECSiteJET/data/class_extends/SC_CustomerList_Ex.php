@@ -25,4 +25,13 @@ require_once CLASS_REALDIR . 'SC_CustomerList.php';
 
 class SC_CustomerList_Ex extends SC_CustomerList
 {
+
+	// 検索用SQL
+	public function getList()
+	{
+		$this->select = 'SELECT customer_id,name01,name02, buy_times, kana01,kana02,sex,email,email_mobile,tel01,tel02,tel03,pref,status,update_date,mailmaga_flg FROM dtb_customer ';
+
+		return $this->getSql(2);
+	}
+
 }
